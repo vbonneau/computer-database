@@ -1,4 +1,4 @@
-package com.exilys.computerDatabase.dao;
+package main.resources.com.excilys.computerDatabase.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import com.excilys.computerDatabase.mapper.CompanyMapper;
-import com.exilys.computerDatabase.entity.Company;
+import main.resources.com.excilys.computerDatabase.entity.Company;
+import main.resources.com.excilys.computerDatabase.mapper.CompanyMapper;
 
 public class CompanyDao {
 	

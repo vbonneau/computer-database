@@ -1,13 +1,13 @@
-package com.exilys.computerDatabase.main;
+package main.resources.com.excilys.computerDatabase.main;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import com.excilys.computerDatabase.mapper.DateMapper;
-import com.exilys.computerDatabase.entity.Company;
-import com.exilys.computerDatabase.entity.Computer;
-import com.exilys.computerDatabase.service.CompanyService;
-import com.exilys.computerDatabase.service.ComputerService;
+import main.resources.com.excilys.computerDatabase.entity.Company;
+import main.resources.com.excilys.computerDatabase.entity.Computer;
+import main.resources.com.excilys.computerDatabase.mapper.DateMapper;
+import main.resources.com.excilys.computerDatabase.service.CompanyService;
+import main.resources.com.excilys.computerDatabase.service.ComputerService;
 
 public class Main {
 	

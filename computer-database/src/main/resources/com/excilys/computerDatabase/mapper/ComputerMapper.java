@@ -1,11 +1,11 @@
-package com.excilys.computerDatabase.mapper;
+package main.resources.com.excilys.computerDatabase.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import com.exilys.computerDatabase.entity.Company;
-import com.exilys.computerDatabase.entity.Computer;
+import main.resources.com.excilys.computerDatabase.entity.Company;
+import main.resources.com.excilys.computerDatabase.entity.Computer;
 
 public class ComputerMapper {
 	

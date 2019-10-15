@@ -1,9 +1,9 @@
-package com.excilys.computerDatabase.mapper;
+package main.resources.com.excilys.computerDatabase.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.exilys.computerDatabase.entity.Company;
+import main.resources.com.excilys.computerDatabase.entity.Company;
 
 public class CompanyMapper {
 	

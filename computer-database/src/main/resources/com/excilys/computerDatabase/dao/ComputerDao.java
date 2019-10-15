@@ -1,4 +1,4 @@
-package com.exilys.computerDatabase.dao;
+package main.resources.com.excilys.computerDatabase.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import com.excilys.computerDatabase.mapper.ComputerMapper;
-import com.exilys.computerDatabase.entity.Computer;
+import main.resources.com.excilys.computerDatabase.entity.Computer;
+import main.resources.com.excilys.computerDatabase.mapper.ComputerMapper;
 
 public class ComputerDao {
 	

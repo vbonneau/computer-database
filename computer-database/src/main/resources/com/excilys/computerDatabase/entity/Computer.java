@@ -1,4 +1,4 @@
-package com.exilys.computerDatabase.entity;
+package main.resources.com.excilys.computerDatabase.entity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

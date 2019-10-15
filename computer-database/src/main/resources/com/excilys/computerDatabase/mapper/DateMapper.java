@@ -1,4 +1,4 @@
-package com.excilys.computerDatabase.mapper;
+package main.resources.com.excilys.computerDatabase.mapper;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;

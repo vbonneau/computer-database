@@ -1,9 +1,10 @@
-package com.exilys.computerDatabase.service;
+package main.resources.com.excilys.computerDatabase.service;
 
 
 import java.util.ArrayList;
-import com.exilys.computerDatabase.dao.ComputerDao;
-import com.exilys.computerDatabase.entity.Computer;
+
+import main.resources.com.excilys.computerDatabase.dao.ComputerDao;
+import main.resources.com.excilys.computerDatabase.entity.Computer;
 
 public class ComputerService {
 	

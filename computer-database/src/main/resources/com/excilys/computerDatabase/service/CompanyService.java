@@ -1,9 +1,9 @@
-package com.exilys.computerDatabase.service;
+package main.resources.com.excilys.computerDatabase.service;
 
 import java.util.ArrayList;
 
-import com.exilys.computerDatabase.dao.CompanyDao;
-import com.exilys.computerDatabase.entity.Company;
+import main.resources.com.excilys.computerDatabase.dao.CompanyDao;
+import main.resources.com.excilys.computerDatabase.entity.Company;
 
 public class CompanyService {
 	
