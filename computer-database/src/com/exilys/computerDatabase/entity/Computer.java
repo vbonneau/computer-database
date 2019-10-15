@@ -1,16 +1,15 @@
 package com.exilys.computerDatabase.entity;
 
-import java.text.SimpleDateFormat;
-//import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Computer {
 	
 	private int id;
 	private String name;
-	private Date introduced;
-	private Date discontinued;
-	private Company company;
+	private LocalDateTime introduced;
+	private LocalDateTime discontinued;
+	private Company company=null;
 	
 	public int getId() {
 		return id;
@@ -28,19 +27,19 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Date getIntroduced() {
+	public LocalDateTime getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(LocalDateTime introduced) {
 		this.introduced = introduced;
 	}
 
-	public Date getDiscontinued() {
+	public LocalDateTime getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(Date discontinued) {
+	public void setDiscontinued(LocalDateTime discontinued) {
 		this.discontinued = discontinued;
 	}
 
@@ -54,17 +53,57 @@ public class Computer {
 
 	@Override
 	public String toString() {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		String introducedFormat = null;
-		String discontinuedFormat = null;
-		if(introduced != null) {
-			introducedFormat = format.format(introduced);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String introducedString=introduced==null ? null: introduced.format(format);
+		String discontinuedString=discontinued==null ? null: discontinued.format(format);
+		String companyName= company==null ? null: company.getName();
+		
+		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introducedString +
+				", discontinued=" + discontinuedString + ", Company=" + companyName + "]";
+	}
+	
+	public static class ComputerBuilder{
+		private int id;
+		private String name;
+		private LocalDateTime introduced;
+		private LocalDateTime discontinued;
+		private Company company=null;
+		
+		public ComputerBuilder withId(int id) {
+			this.id = id;
+			return this;
 		}
-		if(discontinued != null) {
-			discontinuedFormat = format.format(discontinued);
+		
+		public ComputerBuilder withName(String name) {
+			this.name = name;
+			return this;
 		}
-		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introducedFormat +
-				", discontinued=" + discontinuedFormat + ", Company=" + company.getName() + "]";
+		
+		public ComputerBuilder withIntroduced(LocalDateTime introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+		
+		public ComputerBuilder withDiscontinued(LocalDateTime discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+		
+		public ComputerBuilder withCompany(Company company) {
+			this.company = company;
+			return this;
+		}
+		
+		public Computer build() {
+			Computer computer = new Computer();
+			computer.setId(id);
+			computer.setName(name);
+			computer.setIntroduced(introduced);
+			computer.setDiscontinued(discontinued);
+			computer.setCompany(company);
+			
+			return computer;
+		}
 	}
 	
 }

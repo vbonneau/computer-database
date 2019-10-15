@@ -1,45 +1,53 @@
 package com.exilys.computerDatabase.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import com.exilys.computerDatabase.entity.Company;
+import com.excilys.computerDatabase.mapper.ComputerMapper;
 import com.exilys.computerDatabase.entity.Computer;
 
 public class ComputerDao {
 	
-
-	public static ArrayList<Computer> findAll() throws ClassNotFoundException {
-		String query = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id";
+	private final String SELECT_ALL = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
+	private final String SELECT_LIMT_OFFSET = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
+	private final String SELECT_ID = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id=?";
+	private final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
+	private final String UPDATE = "UPDATE computer SET name = ?,introduced = ?,discontinued = ?, company_id = (SELECT id FROM company WHERE company.name LIKE ?) WHERE id = ?";
+	private final String DELETE = "DELETE FROM computer WHERE id=?";
+	private final String COUNT = "SELECT COUNT(id) FROM computer";
+	private final static ComputerDao INSTENCE = new ComputerDao();
+	
+	private ComputerDao(){
+		
+	}
+	
+	public static ComputerDao getComputerDao() {
+		return INSTENCE;
+	}
+	
+	public ArrayList<Computer> findAll(){
+		
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet results;
+		ComputerMapper mapper;
 		
 		try {
 			Connection conn = ConnectionMySQL.getConnection();
-			PreparedStatement statement = conn.prepareStatement(query);
+			PreparedStatement statement = conn.prepareStatement(SELECT_ALL);
 			results = statement.executeQuery();
 			
 			while(results.next()) {
-				Company company = new Company();
-				company.setId(results.getInt("company.id"));
-				company.setName(results.getString("company.name"));
 				
-				Computer computer = new Computer();
-				computer.setId(results.getInt("computer.id"));
-				computer.setName(results.getString("computer.name"));
-				computer.setIntroduced(results.getDate("computer.introduced"));
-				computer.setDiscontinued(results.getDate("computer.discontinued"));
-				computer.setCompany(company);
-				
-				list.add(computer);
+				mapper = ComputerMapper.getInstence();
+				list.add(mapper.ResultSetToComputer(results));
 			}
 			
-		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
 			ConnectionMySQL.closeConnection();
@@ -48,35 +56,25 @@ public class ComputerDao {
 		return list;
 	}
 	
-	public static ArrayList<Computer> findAll(int limit,int offset) throws ClassNotFoundException {
-		String query = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
+	public ArrayList<Computer> findPage(int limit,int offset){
+		
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet results;
+		ComputerMapper mapper = ComputerMapper.getInstence();
 		
 		try {
 			Connection conn = ConnectionMySQL.getConnection();
-			PreparedStatement statement = conn.prepareStatement(query);
+			PreparedStatement statement = conn.prepareStatement(SELECT_LIMT_OFFSET);
 			statement.setInt(1, limit);
 			statement.setInt(2, offset);
 			results = statement.executeQuery();
 			
 			while(results.next()) {
-				Company company = new Company();
-				company.setId(results.getInt("company.id"));
-				company.setName(results.getString("company.name"));
 				
-				Computer computer = new Computer();
-				computer.setId(results.getInt("computer.id"));
-				computer.setName(results.getString("computer.name"));
-				computer.setIntroduced(results.getDate("computer.introduced"));
-				computer.setDiscontinued(results.getDate("computer.discontinued"));
-				computer.setCompany(company);
-				computer.toString();
-				list.add(computer);
+				list.add(mapper.ResultSetToComputer(results));
 			}
 			
-		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
 			ConnectionMySQL.closeConnection();
@@ -85,32 +83,22 @@ public class ComputerDao {
 		return list;
 	}
 	
-	public static Computer findOneById(int id) {
-		String query = "SELECT * FROM computer"  
-				+ " LEFT JOIN company ON computer.company_id = company.id"
-				+ " WHERE computer.id=?";
-		Company company = new Company();
+	public Computer findOneById(int id) {
 		Computer computer = new Computer();
 		ResultSet results;
+		ComputerMapper mapper;
 		
 		try {
 				Connection conn = ConnectionMySQL.getConnection();
-				PreparedStatement statement = conn.prepareStatement(query);
+				PreparedStatement statement = conn.prepareStatement(SELECT_ID);
 				statement.setInt(1,id);
 				results = statement.executeQuery();
 				
 				results.next();
-				company.setId(results.getInt("company.id"));
-				company.setName(results.getString("company.name"));
+				mapper =  ComputerMapper.getInstence();
+				computer = mapper.ResultSetToComputer(results);
 							
-				computer.setId(results.getInt("computer.id"));
-				computer.setName(results.getString("computer.name"));
-				computer.setIntroduced(results.getDate("computer.introduced"));
-				computer.setDiscontinued(results.getDate("computer.discontinued"));
-				computer.setCompany(company);
-							
-		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
 			ConnectionMySQL.closeConnection();
@@ -119,85 +107,68 @@ public class ComputerDao {
 		return computer;
 	}
 	
-	public static void inserComputer(Computer computer) {
-		String query = "INSERT INTO computer (name,introduced,discontinued,company_id)"
-				+"VALUES (?,?,?,(SELECT id FROM company WHERE company.name LIKE ?))";
-		Date sqlIntroduced = null;
-		if(computer.getIntroduced() != null) {
-			sqlIntroduced = new Date(computer.getIntroduced().getTime());
-		}
-		Date sqlDiscontinued = null;
-		if(computer.getDiscontinued() != null) {
-			sqlDiscontinued = new Date(computer.getDiscontinued().getTime());
-		}
+	public void inserComputer(Computer computer) {
+		saveComputer(computer,INSERT);
+	}
+	
+	public void updateComputer(Computer computer) {
+		saveComputer(computer,UPDATE);
+	}
+	
+	private void saveComputer(Computer computer,String query) {
+		Timestamp introduced = null;
+		Timestamp discontinued;
+		LocalDateTime introducedDate = computer.getIntroduced();
+		LocalDateTime discontinuedDate = computer.getDiscontinued();
+		int idCompany = computer.getCompany().getId();
+		
+
+		introduced = introducedDate==null ? null: Timestamp.valueOf(introducedDate);
+		discontinued = discontinuedDate==null ? null: Timestamp.valueOf(discontinuedDate);
 
 		try {
 			Connection conn = ConnectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(query); 
 			statement.setString(1,computer.getName());
-			statement.setDate(2,sqlIntroduced);
-			statement.setDate(3,sqlDiscontinued);
-			statement.setString(4,computer.getCompany().getName());
+			statement.setTimestamp(2,introduced);
+			statement.setTimestamp(3,discontinued);
+			if(idCompany == 0) { statement.setObject(4, null); }
+			else { statement.setInt(4,computer.getCompany().getId()); }
+			if(query == UPDATE) { statement.setInt(5,computer.getId()); }
 			statement.executeUpdate();
 			ConnectionMySQL.closeConnection();
-		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+		} catch (SQLException e){
+			if(e.getErrorCode() == 1292) { System.out.println("date invalide l'enregistemant a échoué"); }
+		}finally {
+			ConnectionMySQL.closeConnection();
 		}
 	}
 	
-	public static void updateComputer(Computer computer) {
-		String query = "UPDATE computer SET name = ?,introduced = ?,discontinued = ?,"
-				+ " company_id = (SELECT id FROM company WHERE company.name LIKE ?) WHERE id = ?";
-		Date sqlIntroduced = new Date(computer.getIntroduced().getTime());
-		Date sqlDiscontinued = new Date(computer.getDiscontinued().getTime());
-
+	public void delete(int id) {
 		try {
 			Connection conn = ConnectionMySQL.getConnection();
-			PreparedStatement statement = conn.prepareStatement(query); 
-			statement.setString(1,computer.getName());
-			statement.setDate(2,sqlIntroduced);
-			statement.setDate(3,sqlDiscontinued);
-			statement.setString(4,computer.getCompany().getName());
-			statement.setInt(5, computer.getId());
-			statement.executeUpdate();
-			ConnectionMySQL.closeConnection();			
-		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public static void delete(int id) {
-		String query ="DELETE FROM computer WHERE id=?";
-		try {
-			Connection conn = ConnectionMySQL.getConnection();
-			PreparedStatement statement = conn.prepareStatement(query);
+			PreparedStatement statement = conn.prepareStatement(DELETE);
 			statement.setInt(1,id);
 			statement.executeUpdate();
 			ConnectionMySQL.closeConnection();
-		} catch (SQLException |ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 			
 	}
 	
-	public static int countComputer() {
-		String query = "SELECT COUNT(*) FROM computer";
+	public int countComputer() {
 		Connection conn;
 		ResultSet results;
 		
 		try {
 			conn = ConnectionMySQL.getConnection();
-			PreparedStatement statement = conn.prepareStatement(query);
+			PreparedStatement statement = conn.prepareStatement(COUNT);
 			results = statement.executeQuery();
 			results.next();
 			return results.getInt(1);
 			
-		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return 0;

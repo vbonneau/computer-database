@@ -7,8 +7,7 @@ public class ConnectionMySQL {
 	
 	private static Connection conn = null;
 	
-	private ConnectionMySQL() throws ClassNotFoundException {
-		//Class.forName("mysql-connector-java-5.1.48.jar");
+	private ConnectionMySQL(){
 		
 		String url = "jdbc:mysql://localhost:3306/computer-database-db?useSSL=false";
 				
@@ -21,7 +20,7 @@ public class ConnectionMySQL {
 		
 	}
 	
-	public static Connection getConnection() throws ClassNotFoundException {
+	public static Connection getConnection(){
 		try {
 			if(conn == null || conn.isClosed()) {
 				new ConnectionMySQL();
