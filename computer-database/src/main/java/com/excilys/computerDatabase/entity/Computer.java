@@ -1,4 +1,4 @@
-package main.resources.com.excilys.computerDatabase.entity;
+package main.java.com.excilys.computerDatabase.entity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,7 +9,7 @@ public class Computer {
 	private String name;
 	private LocalDateTime introduced;
 	private LocalDateTime discontinued;
-	private Company company=null;
+	private Company company = new Company();
 	
 	public int getId() {
 		return id;
@@ -56,18 +56,51 @@ public class Computer {
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		String introducedString=introduced==null ? null: introduced.format(format);
 		String discontinuedString=discontinued==null ? null: discontinued.format(format);
-		String companyName= company==null ? null: company.getName();
 		
 		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introducedString +
-				", discontinued=" + discontinuedString + ", Company=" + companyName + "]";
+				", discontinued=" + discontinuedString + ", Company=" + company.toString() + "]";
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Computer other = (Computer) obj;
+		if (company == null) {
+			if (other.company != null)
+				return false;
+		} else if (!company.equals(other.company))
+			return false;
+		if (discontinued == null) {
+			if (other.discontinued != null)
+				return false;
+		} else if (!discontinued.equals(other.discontinued))
+			return false;
+		if (id != other.id)
+			return false;
+		if (introduced == null) {
+			if (other.introduced != null)
+				return false;
+		} else if (!introduced.equals(other.introduced))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
 	public static class ComputerBuilder{
 		private int id;
 		private String name;
 		private LocalDateTime introduced;
 		private LocalDateTime discontinued;
-		private Company company=null;
+		private Company company= new Company();
 		
 		public ComputerBuilder withId(int id) {
 			this.id = id;

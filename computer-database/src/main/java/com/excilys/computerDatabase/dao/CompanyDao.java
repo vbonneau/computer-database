@@ -1,4 +1,4 @@
-package main.resources.com.excilys.computerDatabase.dao;
+package main.java.com.excilys.computerDatabase.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import main.resources.com.excilys.computerDatabase.entity.Company;
-import main.resources.com.excilys.computerDatabase.mapper.CompanyMapper;
+import main.java.com.excilys.computerDatabase.entity.Company;
+import main.java.com.excilys.computerDatabase.mapper.CompanyMapper;
 
 public class CompanyDao {
 	
@@ -32,8 +32,9 @@ public class CompanyDao {
 		ArrayList<Company> list = new ArrayList<Company>();
 		ResultSet results;
 		CompanyMapper mapper = CompanyMapper.getInstence();
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		try {
-			Connection conn = ConnectionMySQL.getConnection();
+			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(SELECT_ALL);
 			results = statement.executeQuery();
 			
@@ -46,7 +47,7 @@ public class CompanyDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		}
 		
 		return list;
@@ -57,9 +58,10 @@ public ArrayList<Company> findPage(int limit,int offset){
 		ArrayList<Company> list = new ArrayList<Company>();
 		ResultSet results;
 		CompanyMapper mapper;
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		
 		try {
-			Connection conn = ConnectionMySQL.getConnection();
+			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(SELECT_LIMT_OFFSET);
 			
 			statement.setInt(1, limit);
@@ -75,7 +77,7 @@ public ArrayList<Company> findPage(int limit,int offset){
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		}
 		
 		return list;
@@ -84,9 +86,10 @@ public ArrayList<Company> findPage(int limit,int offset){
 	public int countCompany() {
 		Connection conn;
 		ResultSet results;
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		
 		try {
-			conn = ConnectionMySQL.getConnection();
+			conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(COUNT);
 			results = statement.executeQuery();
 			results.next();
@@ -104,9 +107,10 @@ public ArrayList<Company> findPage(int limit,int offset){
 		Company company = null;
 		ResultSet results;
 		CompanyMapper mapper;
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		
 		try {
-			Connection conn = ConnectionMySQL.getConnection();
+			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(SELECT_NAME);
 			statement.setString(1, name);                             
 			results = statement.executeQuery();
@@ -119,7 +123,7 @@ public ArrayList<Company> findPage(int limit,int offset){
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		}
 		
 		return company;

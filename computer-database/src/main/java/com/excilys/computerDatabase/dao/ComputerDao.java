@@ -1,4 +1,4 @@
-package main.resources.com.excilys.computerDatabase.dao;
+package main.java.com.excilys.computerDatabase.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import main.resources.com.excilys.computerDatabase.entity.Computer;
-import main.resources.com.excilys.computerDatabase.mapper.ComputerMapper;
+import main.java.com.excilys.computerDatabase.entity.Computer;
+import main.java.com.excilys.computerDatabase.mapper.ComputerMapper;
 
 public class ComputerDao {
 	
@@ -35,9 +35,10 @@ public class ComputerDao {
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet results;
 		ComputerMapper mapper;
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		
 		try {
-			Connection conn = ConnectionMySQL.getConnection();
+			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(SELECT_ALL);
 			results = statement.executeQuery();
 			
@@ -50,7 +51,7 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		}
 		
 		return list;
@@ -61,9 +62,10 @@ public class ComputerDao {
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet results;
 		ComputerMapper mapper = ComputerMapper.getInstence();
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		
 		try {
-			Connection conn = ConnectionMySQL.getConnection();
+			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(SELECT_LIMT_OFFSET);
 			statement.setInt(1, limit);
 			statement.setInt(2, offset);
@@ -77,7 +79,7 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		}
 		
 		return list;
@@ -87,9 +89,10 @@ public class ComputerDao {
 		Computer computer = new Computer();
 		ResultSet results;
 		ComputerMapper mapper;
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		
 		try {
-				Connection conn = ConnectionMySQL.getConnection();
+				Connection conn = connectionMySQL.getConnection();
 				PreparedStatement statement = conn.prepareStatement(SELECT_ID);
 				statement.setInt(1,id);
 				results = statement.executeQuery();
@@ -101,7 +104,7 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		}
 		
 		return computer;
@@ -117,17 +120,17 @@ public class ComputerDao {
 	
 	private void saveComputer(Computer computer,String query) {
 		Timestamp introduced = null;
-		Timestamp discontinued;
+		Timestamp discontinued = null;
 		LocalDateTime introducedDate = computer.getIntroduced();
 		LocalDateTime discontinuedDate = computer.getDiscontinued();
 		int idCompany = computer.getCompany().getId();
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		
-
 		introduced = introducedDate==null ? null: Timestamp.valueOf(introducedDate);
 		discontinued = discontinuedDate==null ? null: Timestamp.valueOf(discontinuedDate);
 
 		try {
-			Connection conn = ConnectionMySQL.getConnection();
+			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(query); 
 			statement.setString(1,computer.getName());
 			statement.setTimestamp(2,introduced);
@@ -136,23 +139,27 @@ public class ComputerDao {
 			else { statement.setInt(4,computer.getCompany().getId()); }
 			if(query == UPDATE) { statement.setInt(5,computer.getId()); }
 			statement.executeUpdate();
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		} catch (SQLException e){
 			if(e.getErrorCode() == 1292) { System.out.println("date invalide l'enregistemant a échoué"); }
 		}finally {
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		}
 	}
 	
 	public void delete(int id) {
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
+		
 		try {
-			Connection conn = ConnectionMySQL.getConnection();
+			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(DELETE);
 			statement.setInt(1,id);
 			statement.executeUpdate();
-			ConnectionMySQL.closeConnection();
+			connectionMySQL.closeConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			connectionMySQL.closeConnection();
 		}
 			
 	}
@@ -160,9 +167,10 @@ public class ComputerDao {
 	public int countComputer() {
 		Connection conn;
 		ResultSet results;
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		
 		try {
-			conn = ConnectionMySQL.getConnection();
+			conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(COUNT);
 			results = statement.executeQuery();
 			results.next();
@@ -170,7 +178,10 @@ public class ComputerDao {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			connectionMySQL.closeConnection();
 		}
+		
 		return 0;
 	}
 	

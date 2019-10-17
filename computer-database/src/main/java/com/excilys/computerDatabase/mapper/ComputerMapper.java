@@ -1,11 +1,12 @@
-package main.resources.com.excilys.computerDatabase.mapper;
+package main.java.com.excilys.computerDatabase.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-import main.resources.com.excilys.computerDatabase.entity.Company;
-import main.resources.com.excilys.computerDatabase.entity.Computer;
+import main.java.com.excilys.computerDatabase.entity.Company;
+import main.java.com.excilys.computerDatabase.entity.Computer;
 
 public class ComputerMapper {
 	
@@ -26,16 +27,20 @@ public class ComputerMapper {
 		try {
 			company = new Company.CompanyBuilder().withId(result.getInt("company.id")).withName(result.getString("company.name")).build();
 			
+			Timestamp introduced = result.getTimestamp("computer.introduced");
+			LocalDateTime introducedLocal;
+			if(introduced == null) {introducedLocal = null;}
+			else {introducedLocal = introduced.toLocalDateTime();}
+			
+			Timestamp discontinued = result.getTimestamp("computer.discontinued");
+			LocalDateTime discontinuedLocal;
+			if(discontinued == null) {discontinuedLocal = null;}
+			else {discontinuedLocal = discontinued.toLocalDateTime();}
 			
 			computer = new Computer.ComputerBuilder().withId(result.getInt("computer.id"))
-					.withName(result.getString("computer.name")).withCompany(company).build();
-			Timestamp introduced = result.getTimestamp("computer.introduced");
+					.withName(result.getString("computer.name")).withCompany(company)
+					.withIntroduced(introducedLocal).withDiscontinued(discontinuedLocal).build();
 			
-			if(introduced == null) {computer.setIntroduced(null);}
-			else {computer.setIntroduced(introduced.toLocalDateTime());}
-			Timestamp discontinued = result.getTimestamp("computer.discontinued");
-			if(discontinued == null) {computer.setDiscontinued(null);}
-			else {computer.setDiscontinued(discontinued.toLocalDateTime());}
 			
 		} catch (SQLException e) {
 			if(e.getErrorCode() != 0){ System.out.println(e.getMessage()); };

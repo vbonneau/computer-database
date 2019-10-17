@@ -1,4 +1,4 @@
-package main.resources.com.excilys.computerDatabase.entity;
+package main.java.com.excilys.computerDatabase.entity;
 
 public class Company {
 	
@@ -26,7 +26,26 @@ public class Company {
 	public String toString() {
 		return "Company [id=" + id + ", name=" + name + "]";
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Company other = (Company) obj;
+		if (id != other.id)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
 	public static class CompanyBuilder{
 		private int id;
 		private String name;
