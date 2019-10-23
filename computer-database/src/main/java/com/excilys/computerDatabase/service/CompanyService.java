@@ -6,31 +6,29 @@ import main.java.com.excilys.computerDatabase.dao.CompanyDao;
 import main.java.com.excilys.computerDatabase.entity.Company;
 
 public class CompanyService {
-	
+
 	private CompanyDao dao = CompanyDao.getINSTENCE();
 	private static CompanyService instence;
-	
+
 	private CompanyService() {
-		
+
 	}
-	
+
 	public static CompanyService getInstence() {
-		if(instence == null) { instence = new CompanyService(); }
+		if (instence == null) {
+			instence = new CompanyService();
+		}
 		return instence;
 	}
 
 	public ArrayList<Company> getAll() {
-		
 		return dao.findAll();
-		
 	}
-	
+
 	public ArrayList<Company> getPage(int limit, int offcet) {
-		
-		return dao.findPage(limit,offcet);
-		
+		return dao.findPage(limit, offcet);
 	}
-	
+
 	public int count() {
 		return dao.countCompany();
 	}

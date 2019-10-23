@@ -1,14 +1,14 @@
 package main.java.com.excilys.computerDatabase.entity;
 
 public class Company {
-	
+
 	private int id;
 	private String name;
-	
+
 	public Company() {
-		
+
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -28,38 +28,53 @@ public class Company {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Company other = (Company) obj;
-		if (id != other.id)
+		if (id != other.id) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 
-	public static class CompanyBuilder{
+	public static class CompanyBuilder {
 		private int id;
-		private String name;
-		
+		private String name = "";
+
 		public CompanyBuilder withId(int id) {
 			this.id = id;
 			return this;
 		}
-		
+
 		public CompanyBuilder withName(String name) {
 			this.name = name;
 			return this;
 		}
-		
+
 		public Company build() {
 			Company company = new Company();
 			company.setId(id);
@@ -67,5 +82,4 @@ public class Company {
 			return company;
 		}
 	}
-
 }

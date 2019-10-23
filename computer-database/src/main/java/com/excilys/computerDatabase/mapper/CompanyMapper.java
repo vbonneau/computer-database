@@ -6,27 +6,28 @@ import java.sql.SQLException;
 import main.java.com.excilys.computerDatabase.entity.Company;
 
 public class CompanyMapper {
-	
+
 	private static CompanyMapper instence;
-	
+
 	private CompanyMapper() {
-		
+
 	}
-	
+
 	public static CompanyMapper getInstence() {
-		if(instence == null) { instence = new CompanyMapper(); }
+		if (instence == null) {
+			instence = new CompanyMapper();
+		}
 		return instence;
 	}
 
-	public Company ResultSetToCompany(ResultSet result) {
+	public Company resultSetToCompany(ResultSet result) {
 		Company company;
-		
+
 		try {
 			company = new Company.CompanyBuilder().withId(result.getInt("id")).withName(result.getString("name")).build();
 		} catch (SQLException e) {
 			company = new Company();
 		}
-		
 		return company;
 	}
 }
