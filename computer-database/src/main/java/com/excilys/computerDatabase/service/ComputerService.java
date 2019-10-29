@@ -1,10 +1,14 @@
-package main.java.com.excilys.computerDatabase.service;
+package com.excilys.computerDatabase.service;
 
 
 import java.util.ArrayList;
 
-import main.java.com.excilys.computerDatabase.dao.ComputerDao;
-import main.java.com.excilys.computerDatabase.entity.Computer;
+
+
+
+import com.excilys.computerDatabase.dao.ComputerDao;
+import com.excilys.computerDatabase.entity.Computer;
+
 
 public class ComputerService {
 
@@ -27,8 +31,8 @@ public class ComputerService {
 		return listComputer;
 	}
 
-	public ArrayList<Computer> getPage(int limit, int offset) {
-		ArrayList<Computer> listComputer = dao.findPage(limit, offset);
+	public ArrayList<Computer> getPage(int limit, int offset, String order) {
+		ArrayList<Computer> listComputer = dao.findPage(limit, offset, order);
 		return listComputer;
 	}
 
@@ -46,13 +50,21 @@ public class ComputerService {
 		return dao.inserComputer(computer);
 	}
 
-	public Computer updateComputer(Computer computer) {
-		dao.updateComputer(computer);
-		return computer;
+	public boolean updateComputer(Computer computer) {
+		return dao.updateComputer(computer);
 	}
 
 	public boolean deleteComputer(int id) {
 		return dao.deleteComputer(id);
+	}
+
+	public ArrayList<Computer> getPage(int limit, int offset, String search, String order, boolean asc) {
+		ArrayList<Computer> listComputer = dao.findPage(limit, offset,search, order, asc);
+		return listComputer;
+	}
+
+	public int count(String search) {
+		return dao.countComputer(search);
 	}
 
 }

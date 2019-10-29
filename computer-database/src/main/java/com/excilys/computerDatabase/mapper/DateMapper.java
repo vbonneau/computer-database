@@ -1,8 +1,10 @@
-package main.java.com.excilys.computerDatabase.mapper;
+package com.excilys.computerDatabase.mapper;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import com.excilys.computerDatabase.exception.BadEntriException;
 
 public class DateMapper {
 
@@ -19,13 +21,16 @@ public class DateMapper {
 		return instence;
 	}
 
-	public LocalDate StringToDate(String dateString) {
-		LocalDate date;
+	public LocalDate StringToDate(String dateString) throws BadEntriException {
+		LocalDate date = null;
+		if(dateString.equals("")) {
+			return date;
+		}
 		try {
 			date = LocalDate.parse(dateString);
 			return date;
 		} catch (DateTimeException e) {
-			return null;
+			throw new BadEntriException("date fprmat not good");
 		}
 	}
 

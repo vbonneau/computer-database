@@ -1,13 +1,14 @@
-package main.java.com.excilys.computerDatabase.main;
+package com.excilys.computerDatabase.main;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import main.java.com.excilys.computerDatabase.entity.Company;
-import main.java.com.excilys.computerDatabase.entity.Computer;
-import main.java.com.excilys.computerDatabase.mapper.DateMapper;
-import main.java.com.excilys.computerDatabase.service.CompanyService;
-import main.java.com.excilys.computerDatabase.service.ComputerService;
+import com.excilys.computerDatabase.entity.Company;
+import com.excilys.computerDatabase.entity.Computer;
+import com.excilys.computerDatabase.exception.BadEntriException;
+import com.excilys.computerDatabase.mapper.DateMapper;
+import com.excilys.computerDatabase.service.CompanyService;
+import com.excilys.computerDatabase.service.ComputerService;
 
 public class Main {
 
@@ -58,6 +59,10 @@ public class Main {
 			case "Delete a computer":
 				deleteComputer();
 				break;
+			case "7":
+			case "Delete a company":
+				deleteCompany();
+				break;
 			case "0":
 			case "quit":
 				testContinue = false;
@@ -71,13 +76,28 @@ public class Main {
 	}
 
 
+	private static void deleteCompany() {
+		int id = 0;
+		System.out.println("veuillez entrer l'id de l'ordinateur");
+		if (sc.hasNextInt()) {
+			id = sc.nextInt();
+			sc.nextLine();
+		}
+		if (id == 0) {
+			return;
+		}
+		CompanyService service = CompanyService.getInstence();
+		service.deleteCompany(id);
+	}
+
+
 	private static void listComputer() {
 		ComputerService service = ComputerService.getInstence();
 		int nbComputer = service.count();
 		nbPage = (nbComputer + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			ArrayList<Computer> listComputer =  service.getPage(limit, offset);
+			ArrayList<Computer> listComputer =  service.getPage(limit, offset,"id");
 		displaylistComputer(listComputer);
 		} while (navigatePage());
 	}
@@ -222,7 +242,12 @@ public class Main {
 		LocalDate date = null;
 		System.out.println("veuillez entrer la date à laquelle l'ordinateur à été " + sentence + " ( format jour/mois/année )");
 		String dateString = sc.nextLine();
-		date = DateMapper.getInstence().StringToDate(dateString);
+		try {
+			date = DateMapper.getInstence().StringToDate(dateString);
+		} catch (BadEntriException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (date == null) {
 			System.out.println("date invalide, aucune date n'a été enregistré");
 		}

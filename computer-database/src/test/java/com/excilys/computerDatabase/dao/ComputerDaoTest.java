@@ -1,4 +1,4 @@
-package test.java.com.excilys.computerDatabase.dao;
+package com.excilys.computerDatabase.dao;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,19 +7,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.TestCase;
-import main.java.com.excilys.computerDatabase.dao.ComputerDao;
-import main.java.com.excilys.computerDatabase.dao.ConnectionMySQL;
-import main.java.com.excilys.computerDatabase.entity.Company;
-import main.java.com.excilys.computerDatabase.entity.Computer;
+import com.excilys.computerDatabase.dao.ComputerDao;
+import com.excilys.computerDatabase.entity.Company;
+import com.excilys.computerDatabase.entity.Computer;
 
 public class ComputerDaoTest extends TestCase {
 
-	private ConnectionMySQL connectionMySQL;
-
 	@Before
 	public void setUp() {
-		connectionMySQL = ConnectionMySQL.getInstence();
-		connectionMySQL.useTestDatabase();
+
 	}
 
 	@Test
@@ -97,7 +93,7 @@ public class ComputerDaoTest extends TestCase {
 				.build();
 		list.add(computer);
 
-		assertEquals(list, dao.findPage(2, 1));
+		assertEquals(list, dao.findPage(2, 1,"","id",true));
 	}
 
 	@Test

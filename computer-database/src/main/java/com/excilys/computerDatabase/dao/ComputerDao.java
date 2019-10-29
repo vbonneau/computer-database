@@ -1,4 +1,4 @@
-package main.java.com.excilys.computerDatabase.dao;
+package com.excilys.computerDatabase.dao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -8,19 +8,35 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import main.java.com.excilys.computerDatabase.entity.Computer;
-import main.java.com.excilys.computerDatabase.mapper.ComputerMapper;
+
+
+import com.excilys.computerDatabase.entity.Computer;
+import com.excilys.computerDatabase.mapper.ComputerMapper;
+
 
 public class ComputerDao {
 
-	private final String SELECT_ALL = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
-	private final String SELECT_LIMT_OFFSET = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
-	private final String SELECT_ID = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id=?";
+	private final String SELECT_ALL = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name"
+			+ " FROM computer LEFT JOIN company ON computer.company_id = company.id";
+	private final String SELECT_LIMT_OFFSET = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name"
+			+ " FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
+	private final String SELECT_ID = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name"
+			+"FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id=?";
 	private final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
-	private final String UPDATE = "UPDATE computer SET name = ?,introduced = ?,discontinued = ?, company_id = (SELECT id FROM company WHERE company.name LIKE ?) WHERE id = ?";
+	private final String UPDATE = "UPDATE computer SET name = ?,introduced = ?,discontinued = ?, company_id = ? WHERE id = ?";
 	private final String DELETE = "DELETE FROM computer WHERE id=?";
 	private final String COUNT = "SELECT COUNT(id) FROM computer";
+	private final String SELECT_LIMT_OFFSET_SEARCH_ASC = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name "
+			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name like ? OR company.name like ? "
+			+ "ORDER BY CASE ? WHEN 'name' THEN computer.name WHEN 'introduced' THEN computer.introduced "
+			+ "WHEN 'discontinued' THEN computer.discontinued WHEN 'company' THEN company.name END ASC LIMIT ? OFFSET ?";
+	private final String SELECT_LIMT_OFFSET_SEARCH_DESC = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name "
+			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name like ? OR company.name like ? "
+			+ "ORDER BY CASE ? WHEN 'name' THEN computer.name WHEN 'introduced' THEN computer.introduced "
+			+ "WHEN 'discontinued' THEN computer.discontinued WHEN 'company' THEN company.name END DESC LIMIT ? OFFSET ?";
+	private final String COUNT_SEARCH = "SELECT COUNT(computer.id) FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name like ? OR company.name like ?";
 	private static final ComputerDao INSTENCE = new ComputerDao();
+	
 
 	private ComputerDao() {
 
@@ -53,7 +69,7 @@ public class ComputerDao {
 		return list;
 	}
 
-	public ArrayList<Computer> findPage(int limit, int offset) {
+	public ArrayList<Computer> findPage(int limit, int offset, String order) {
 
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet results;
@@ -104,6 +120,7 @@ public class ComputerDao {
 
 	public boolean inserComputer(Computer computer) {
 		return saveComputer(computer, INSERT);
+		
 	}
 
 	public boolean updateComputer(Computer computer) {
@@ -120,8 +137,8 @@ public class ComputerDao {
 			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(query);
 			statement.setString(1, computer.getName());
-			statement.setDate(2, Date.valueOf(introduced));
-			statement.setDate(3, Date.valueOf(discontinued));
+			statement.setDate(2, introduced == null?null:Date.valueOf(introduced));
+			statement.setDate(3, discontinued == null?null:Date.valueOf(discontinued));
 			if (idCompany == 0) {
 				statement.setObject(4, null);
 			} else {
@@ -133,9 +150,7 @@ public class ComputerDao {
 			statement.executeUpdate();
 			connectionMySQL.closeConnection();
 		} catch (SQLException e) {
-			if (e.getErrorCode() == 1292) {
-				System.out.println("date invalide l'enregistemant a échoué");
-			}
+			System.out.println(e.getMessage());
 			return false;
 		} finally {
 			connectionMySQL.closeConnection();
@@ -168,6 +183,58 @@ public class ComputerDao {
 		try {
 			conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(COUNT);
+			results = statement.executeQuery();
+			results.next();
+			return results.getInt(1);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connectionMySQL.closeConnection();
+		}
+		return 0;
+	}
+
+	public ArrayList<Computer> findPage(int limit, int offset, String search, String order,boolean asc) {
+		ArrayList<Computer> list = new ArrayList<Computer>();
+		ResultSet results;
+		ComputerMapper mapper = ComputerMapper.getInstence();
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
+
+		try {
+			Connection conn = connectionMySQL.getConnection();
+			String querry = asc?SELECT_LIMT_OFFSET_SEARCH_ASC:SELECT_LIMT_OFFSET_SEARCH_DESC;
+			PreparedStatement statement = conn.prepareStatement(querry);
+			statement.setString(1, "%" + search + "%");
+			statement.setString(2, "%" + search + "%");
+			statement.setString(3, order);
+			statement.setInt(4, limit);
+			statement.setInt(5, offset);
+			
+			
+			results = statement.executeQuery();
+
+			while (results.next()) {
+				list.add(mapper.resultSetToComputer(results));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connectionMySQL.closeConnection();
+		}
+		return list;
+	}
+
+	public int countComputer(String search) {
+		Connection conn;
+		ResultSet results;
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
+
+		try {
+			conn = connectionMySQL.getConnection();
+			PreparedStatement statement = conn.prepareStatement(COUNT_SEARCH);
+			statement.setString(1, "%" + search + "%");
+			statement.setString(2, "%" + search + "%");
 			results = statement.executeQuery();
 			results.next();
 			return results.getInt(1);

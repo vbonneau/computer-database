@@ -1,7 +1,7 @@
-package main.java.com.excilys.computerDatabase.entity;
+package com.excilys.computerDatabase.entity;
 
 import java.time.LocalDate;
-import main.java.com.excilys.computerDatabase.mapper.DateMapper;
+import com.excilys.computerDatabase.mapper.DateMapper;
 
 public class Computer {
 

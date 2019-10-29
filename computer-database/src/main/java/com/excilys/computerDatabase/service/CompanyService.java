@@ -1,9 +1,9 @@
-package main.java.com.excilys.computerDatabase.service;
+package com.excilys.computerDatabase.service;
 
 import java.util.ArrayList;
 
-import main.java.com.excilys.computerDatabase.dao.CompanyDao;
-import main.java.com.excilys.computerDatabase.entity.Company;
+import com.excilys.computerDatabase.dao.CompanyDao;
+import com.excilys.computerDatabase.entity.Company;
 
 public class CompanyService {
 
@@ -35,5 +35,9 @@ public class CompanyService {
 
 	public Company getCompany(String companyName) {
 		return dao.findOneByName(companyName);
+	}
+
+	public void deleteCompany(int id) {
+		dao.deleteCompany(id);
 	}
 }

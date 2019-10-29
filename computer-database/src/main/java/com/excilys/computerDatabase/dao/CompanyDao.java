@@ -1,4 +1,4 @@
-package main.java.com.excilys.computerDatabase.dao;
+package com.excilys.computerDatabase.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import main.java.com.excilys.computerDatabase.entity.Company;
-import main.java.com.excilys.computerDatabase.mapper.CompanyMapper;
+import com.excilys.computerDatabase.entity.Company;
+import com.excilys.computerDatabase.mapper.CompanyMapper;
 
 public class CompanyDao {
 
@@ -15,7 +15,8 @@ public class CompanyDao {
 	private final String SELECT_LIMT_OFFSET = "SELECT id,name FROM company LIMIT ? OFFSET ?";
 	private final String COUNT = "SELECT COUNT(id) FROM company";
 	private final String SELECT_NAME = "SELECT id,name FROM company WHERE company.name LIKE ?";
-
+	private final String DELETE_COMPUTER = "DELETE FROM computer WHERE company_id=?";
+	private final String DELETE = "DELETE FROM company WHERE id=?";
 	private static CompanyDao instence = new CompanyDao();
 
 	private CompanyDao() {
@@ -124,5 +125,27 @@ public class CompanyDao {
 			connectionMySQL.closeConnection();
 		}
 		return company;
+	}
+
+	public boolean deleteCompany(int id) {
+		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
+		try {
+			Connection conn = connectionMySQL.getConnection();
+			conn.setAutoCommit(false);
+			PreparedStatement computerStatement = conn.prepareStatement(DELETE_COMPUTER);
+			computerStatement.setInt(1, id);
+			computerStatement.executeUpdate();
+			PreparedStatement companyStatement = conn.prepareStatement(DELETE);
+			companyStatement.setInt(1, id);
+			companyStatement.executeUpdate();
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			connectionMySQL.closeConnection();
+		}
+		return true;
+		
 	}
 }

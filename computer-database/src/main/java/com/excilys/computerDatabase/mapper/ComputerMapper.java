@@ -1,13 +1,15 @@
-package main.java.com.excilys.computerDatabase.mapper;
+package com.excilys.computerDatabase.mapper;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import main.java.com.excilys.computerDatabase.dto.ComputerDto;
-import main.java.com.excilys.computerDatabase.entity.Company;
-import main.java.com.excilys.computerDatabase.entity.Computer;
+import com.excilys.computerDatabase.dto.ComputerDto;
+import com.excilys.computerDatabase.entity.Company;
+import com.excilys.computerDatabase.entity.Computer;
+import com.excilys.computerDatabase.exception.BadEntriException;
+import com.excilys.computerDatabase.validator.Validator;
 
 public class ComputerMapper {
 
@@ -51,9 +53,7 @@ public class ComputerMapper {
 					.withIntroduced(introducedLocal).withDiscontinued(discontinuedLocal).build();
 
 		} catch (SQLException e) {
-			if (e.getErrorCode() != 0) {
 				System.out.println(e.getMessage());
-			}
 		}
 		return computer;
 	}
@@ -71,8 +71,17 @@ public class ComputerMapper {
 		return dto;
 	}
 	
-	public Computer dtoToComputer(ComputerDto dto) {
+	public Computer dtoToComputer(ComputerDto dto) throws BadEntriException {
 		DateMapper dateMapper = DateMapper.getInstence();
+		Validator validator = Validator.getInstence();
+		LocalDate introduced = dateMapper.StringToDate(dto.getIntroduced());
+		LocalDate discontinued = dateMapper.StringToDate(dto.getDiscontinued());
+		
+		validator.checkName(dto.getName());
+		validator.chekValidDate(introduced);
+		validator.chekValidDate(discontinued);
+		validator.checkTowDate(introduced, discontinued);
+		
 		Company company = new Company.CompanyBuilder()
 				.withId(dto.getCompanyId())
 				.withName(dto.getCompanyName())
@@ -80,8 +89,8 @@ public class ComputerMapper {
 		Computer computer = new Computer.ComputerBuilder()
 				.withId(dto.getId())
 				.withName(dto.getName())
-				.withIntroduced(dateMapper.StringToDate(dto.getIntroduced()))
-				.withDiscontinued(dateMapper.StringToDate(dto.getDiscontinued()))
+				.withIntroduced(introduced)
+				.withDiscontinued(discontinued)
 				.withCompany(company)
 				.build();
 		
