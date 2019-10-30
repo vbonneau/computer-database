@@ -3,6 +3,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.computerDatabase.entity.Company;
 import com.excilys.computerDatabase.entity.Computer;
 import com.excilys.computerDatabase.exception.BadEntriException;
@@ -18,6 +20,12 @@ public class Main {
 	private static int nbPage;
 	private static int actualPage = 1;
 	private static String command;
+	@Autowired
+	private static CompanyService companyService;
+	@Autowired
+	private static ComputerService computerService;
+	@Autowired
+	private static DateMapper dateMapper;
 
 
 	public static void main(String[] args) throws ClassNotFoundException {
@@ -86,29 +94,26 @@ public class Main {
 		if (id == 0) {
 			return;
 		}
-		CompanyService service = CompanyService.getInstence();
-		service.deleteCompany(id);
+		companyService.deleteCompany(id);
 	}
 
 
 	private static void listComputer() {
-		ComputerService service = ComputerService.getInstence();
-		int nbComputer = service.count();
+		int nbComputer = computerService.count();
 		nbPage = (nbComputer + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			ArrayList<Computer> listComputer =  service.getPage(limit, offset,"id");
+			ArrayList<Computer> listComputer =  computerService.getPage(limit, offset,"id");
 		displaylistComputer(listComputer);
 		} while (navigatePage());
 	}
 
 	private static void listCompany() {
-		CompanyService service = CompanyService.getInstence();
-		int nbCompany = service.count();
+		int nbCompany = companyService.count();
 		nbPage = (nbCompany + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			ArrayList<Company> listCompany =  service.getPage(limit, offset);
+			ArrayList<Company> listCompany =  companyService.getPage(limit, offset);
 		displaylistCompany(listCompany);
 		} while (navigatePage());
 
@@ -165,13 +170,12 @@ public class Main {
 	private static int displayOneComputer() {
 		int id = 0;
 		Computer computer;
-		ComputerService service = ComputerService.getInstence();
 		System.out.println("veuillez entrer l'id de l'ordinateur");
 		if (sc.hasNextInt()) {
 			id = sc.nextInt();
 			sc.nextLine();
 		}
-		computer = service.getOne(id);
+		computer = computerService.getOne(id);
 		id = computer.getId();
 		if (id == 0) {
 			System.out.println("l'ordinateur n'as pas été trouvé");
@@ -186,8 +190,7 @@ public class Main {
 	private static void creatComputer() {
 		Computer computer = askInfoComputer();
 		System.out.println(computer.toString());
-		ComputerService service = ComputerService.getInstence();
-		service.addCompeuter(computer);
+		computerService.addCompeuter(computer);
 	}
 
 	private static void updateComputer() {
@@ -198,8 +201,7 @@ public class Main {
 		Computer computer = askInfoComputer();
 		computer.setId(id);
 		System.out.println(computer.toString());
-		ComputerService service = ComputerService.getInstence();
-		service.updateComputer(computer);
+		computerService.updateComputer(computer);
 	}
 
 	private static void deleteComputer() {
@@ -207,8 +209,7 @@ public class Main {
 		if (id == 0) {
 			return;
 		}
-		ComputerService service = ComputerService.getInstence();
-		service.deleteComputer(id);
+		computerService.deleteComputer(id);
 	}
 
 	private static Computer askInfoComputer() {
@@ -243,7 +244,7 @@ public class Main {
 		System.out.println("veuillez entrer la date à laquelle l'ordinateur à été " + sentence + " ( format jour/mois/année )");
 		String dateString = sc.nextLine();
 		try {
-			date = DateMapper.getInstence().StringToDate(dateString);
+			date = dateMapper.StringToDate(dateString);
 		} catch (BadEntriException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -269,7 +270,6 @@ public class Main {
 	private static Company askCompany() {
 		Company company = new Company();
 		String companyName;
-		CompanyService companyService = CompanyService.getInstence();
 		System.out.println("veuillez entrer le nom de la compagni qui fabriqué l'ordinateur");
 		companyName = sc.nextLine();
 		company = companyService.getCompany(companyName);

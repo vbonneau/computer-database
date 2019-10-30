@@ -3,27 +3,20 @@ package com.excilys.computerDatabase.service;
 
 import java.util.ArrayList;
 
-
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.computerDatabase.dao.ComputerDao;
 import com.excilys.computerDatabase.entity.Computer;
 
-
+@Service
 public class ComputerService {
 
-	private ComputerDao dao = ComputerDao.getComputerDao();
-	private static ComputerService instence;
+	@Autowired
+	private ComputerDao dao;
 
-	private ComputerService() {
+	public ComputerService() {
 
-	}
-
-	public static ComputerService getInstence() {
-		if (instence == null) {
-			instence = new ComputerService();
-		}
-		return instence;
 	}
 
 	public ArrayList<Computer> getAll() {

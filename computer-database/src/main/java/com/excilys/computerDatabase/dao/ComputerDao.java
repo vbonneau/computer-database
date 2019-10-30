@@ -8,12 +8,15 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.computerDatabase.entity.Computer;
 import com.excilys.computerDatabase.mapper.ComputerMapper;
 
-
+@Repository
+@Scope("singleton")
 public class ComputerDao {
 
 	private final String SELECT_ALL = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name"
@@ -21,7 +24,7 @@ public class ComputerDao {
 	private final String SELECT_LIMT_OFFSET = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name"
 			+ " FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?";
 	private final String SELECT_ID = "SELECT computer.id,computer.name,introduced,discontinued,company.id,company.name"
-			+"FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id=?";
+			+ " FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id=?";
 	private final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
 	private final String UPDATE = "UPDATE computer SET name = ?,introduced = ?,discontinued = ?, company_id = ? WHERE id = ?";
 	private final String DELETE = "DELETE FROM computer WHERE id=?";
@@ -35,31 +38,26 @@ public class ComputerDao {
 			+ "ORDER BY CASE ? WHEN 'name' THEN computer.name WHEN 'introduced' THEN computer.introduced "
 			+ "WHEN 'discontinued' THEN computer.discontinued WHEN 'company' THEN company.name END DESC LIMIT ? OFFSET ?";
 	private final String COUNT_SEARCH = "SELECT COUNT(computer.id) FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name like ? OR company.name like ?";
-	private static final ComputerDao INSTENCE = new ComputerDao();
-	
+	@Autowired
+	private ConnectionMySQL connectionMySQL;
+	@Autowired
+	private ComputerMapper computerMapper;
 
 	private ComputerDao() {
 
-	}
-
-	public static ComputerDao getComputerDao() {
-		return INSTENCE;
 	}
 
 	public ArrayList<Computer> findAll() {
 
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet results;
-		ComputerMapper mapper;
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			Connection conn = connectionMySQL.getConnection();
 			PreparedStatement statement = conn.prepareStatement(SELECT_ALL);
 			results = statement.executeQuery();
 			while (results.next()) {
-				mapper = ComputerMapper.getInstence();
-				list.add(mapper.resultSetToComputer(results));
+				list.add(computerMapper.resultSetToComputer(results));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -73,8 +71,6 @@ public class ComputerDao {
 
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet results;
-		ComputerMapper mapper = ComputerMapper.getInstence();
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			Connection conn = connectionMySQL.getConnection();
@@ -84,7 +80,7 @@ public class ComputerDao {
 			results = statement.executeQuery();
 
 			while (results.next()) {
-				list.add(mapper.resultSetToComputer(results));
+				list.add(computerMapper.resultSetToComputer(results));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -97,8 +93,6 @@ public class ComputerDao {
 	public Computer findOneById(int id) {
 		Computer computer = new Computer();
 		ResultSet results;
-		ComputerMapper mapper;
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 				Connection conn = connectionMySQL.getConnection();
@@ -107,8 +101,7 @@ public class ComputerDao {
 				results = statement.executeQuery();
 
 				results.next();
-				mapper =  ComputerMapper.getInstence();
-				computer = mapper.resultSetToComputer(results);
+				computer = computerMapper.resultSetToComputer(results);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -131,7 +124,6 @@ public class ComputerDao {
 		LocalDate introduced = computer.getIntroduced();
 		LocalDate discontinued = computer.getDiscontinued();
 		int idCompany = computer.getCompany().getId();
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			Connection conn = connectionMySQL.getConnection();
@@ -159,7 +151,6 @@ public class ComputerDao {
 	}
 
 	public boolean deleteComputer(int id) {
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			Connection conn = connectionMySQL.getConnection();
@@ -178,7 +169,6 @@ public class ComputerDao {
 	public int countComputer() {
 		Connection conn;
 		ResultSet results;
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			conn = connectionMySQL.getConnection();
@@ -198,8 +188,6 @@ public class ComputerDao {
 	public ArrayList<Computer> findPage(int limit, int offset, String search, String order,boolean asc) {
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet results;
-		ComputerMapper mapper = ComputerMapper.getInstence();
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			Connection conn = connectionMySQL.getConnection();
@@ -215,7 +203,7 @@ public class ComputerDao {
 			results = statement.executeQuery();
 
 			while (results.next()) {
-				list.add(mapper.resultSetToComputer(results));
+				list.add(computerMapper.resultSetToComputer(results));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -228,7 +216,6 @@ public class ComputerDao {
 	public int countComputer(String search) {
 		Connection conn;
 		ResultSet results;
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			conn = connectionMySQL.getConnection();

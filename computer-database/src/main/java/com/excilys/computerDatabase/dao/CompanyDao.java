@@ -6,9 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.excilys.computerDatabase.entity.Company;
 import com.excilys.computerDatabase.mapper.CompanyMapper;
 
+@Repository
 public class CompanyDao {
 
 	private final String SELECT_ALL = "SELECT id,name FROM company";
@@ -17,23 +21,18 @@ public class CompanyDao {
 	private final String SELECT_NAME = "SELECT id,name FROM company WHERE company.name LIKE ?";
 	private final String DELETE_COMPUTER = "DELETE FROM computer WHERE company_id=?";
 	private final String DELETE = "DELETE FROM company WHERE id=?";
-	private static CompanyDao instence = new CompanyDao();
+	@Autowired
+	private ConnectionMySQL connectionMySQL;
+	@Autowired
+	private CompanyMapper companyMapper;
 
 	private CompanyDao() {
 
 	}
 
-	public static CompanyDao getINSTENCE() {
-		return instence;
-	}
-
-
-
 	public ArrayList<Company> findAll() {
 		ArrayList<Company> list = new ArrayList<Company>();
 		ResultSet results;
-		CompanyMapper mapper = CompanyMapper.getInstence();
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			Connection conn = connectionMySQL.getConnection();
@@ -41,7 +40,7 @@ public class CompanyDao {
 			results = statement.executeQuery();
 
 			while (results.next()) {
-				list.add(mapper.resultSetToCompany(results));
+				list.add(companyMapper.resultSetToCompany(results));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -56,8 +55,6 @@ public class CompanyDao {
 
 		ArrayList<Company> list = new ArrayList<Company>();
 		ResultSet results;
-		CompanyMapper mapper;
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			Connection conn = connectionMySQL.getConnection();
@@ -68,8 +65,7 @@ public class CompanyDao {
 			results = statement.executeQuery();
 
 			while (results.next()) {
-				mapper = CompanyMapper.getInstence();
-				list.add(mapper.resultSetToCompany(results));
+				list.add(companyMapper.resultSetToCompany(results));
 			}
 
 		} catch (SQLException e) {
@@ -84,7 +80,6 @@ public class CompanyDao {
 	public int countCompany() {
 		Connection conn;
 		ResultSet results;
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			conn = connectionMySQL.getConnection();
@@ -106,8 +101,6 @@ public class CompanyDao {
 
 		Company company = null;
 		ResultSet results;
-		CompanyMapper mapper;
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 
 		try {
 			Connection conn = connectionMySQL.getConnection();
@@ -115,8 +108,7 @@ public class CompanyDao {
 			statement.setString(1, name);
 			results = statement.executeQuery();
 			results.next();
-			mapper = CompanyMapper.getInstence();
-			company = mapper.resultSetToCompany(results);
+			company = companyMapper.resultSetToCompany(results);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -128,7 +120,6 @@ public class CompanyDao {
 	}
 
 	public boolean deleteCompany(int id) {
-		ConnectionMySQL connectionMySQL = ConnectionMySQL.getInstence();
 		try {
 			Connection conn = connectionMySQL.getConnection();
 			conn.setAutoCommit(false);

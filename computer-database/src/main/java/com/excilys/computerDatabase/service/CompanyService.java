@@ -2,23 +2,20 @@ package com.excilys.computerDatabase.service;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.excilys.computerDatabase.dao.CompanyDao;
 import com.excilys.computerDatabase.entity.Company;
 
+@Service
 public class CompanyService {
 
-	private CompanyDao dao = CompanyDao.getINSTENCE();
-	private static CompanyService instence;
+	@Autowired
+	private CompanyDao dao;
 
 	private CompanyService() {
 
-	}
-
-	public static CompanyService getInstence() {
-		if (instence == null) {
-			instence = new CompanyService();
-		}
-		return instence;
 	}
 
 	public ArrayList<Company> getAll() {

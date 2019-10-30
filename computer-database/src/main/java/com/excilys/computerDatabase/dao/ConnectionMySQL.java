@@ -3,13 +3,15 @@ package com.excilys.computerDatabase.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Repository;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+@Repository
 public class ConnectionMySQL {
 
 	private Connection conn = null;
-	private static ConnectionMySQL instence;
 	String configFile = "/db.properties";
 	
 	HikariConfig cfg = new HikariConfig(configFile);
@@ -17,13 +19,6 @@ public class ConnectionMySQL {
 
 	private ConnectionMySQL() {
 
-	}
-
-	public static ConnectionMySQL getInstence() {
-		if (instence == null) {
-			instence = new ConnectionMySQL();
-		}
-		return instence;
 	}
 
 	public Connection getConnection() throws SQLException {

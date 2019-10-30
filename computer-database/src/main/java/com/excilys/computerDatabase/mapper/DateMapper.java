@@ -4,21 +4,15 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerDatabase.exception.BadEntriException;
 
+@Component
 public class DateMapper {
-
-	private static DateMapper instence; 
 
 	private DateMapper() {
 
-	}
-
-	public static DateMapper getInstence() {
-		if (instence == null) {
-			instence = new DateMapper();
-		}
-		return instence;
 	}
 
 	public LocalDate StringToDate(String dateString) throws BadEntriException {

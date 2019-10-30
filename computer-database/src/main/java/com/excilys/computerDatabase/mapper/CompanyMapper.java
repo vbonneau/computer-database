@@ -3,22 +3,17 @@ package com.excilys.computerDatabase.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerDatabase.entity.Company;
 
+@Component
 public class CompanyMapper {
-
-	private static CompanyMapper instence;
 
 	private CompanyMapper() {
 
 	}
 
-	public static CompanyMapper getInstence() {
-		if (instence == null) {
-			instence = new CompanyMapper();
-		}
-		return instence;
-	}
 
 	public Company resultSetToCompany(ResultSet result) {
 		Company company;

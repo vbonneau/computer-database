@@ -5,25 +5,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerDatabase.dto.ComputerDto;
 import com.excilys.computerDatabase.entity.Company;
 import com.excilys.computerDatabase.entity.Computer;
 import com.excilys.computerDatabase.exception.BadEntriException;
 import com.excilys.computerDatabase.validator.Validator;
 
+@Component
 public class ComputerMapper {
 
-	private static ComputerMapper instence;
 
+	@Autowired
+	DateMapper dateMapper;
 	private ComputerMapper() {
 
-	}
-
-	public static ComputerMapper getInstence() {
-		if (instence == null) {
-			instence = new ComputerMapper();
-		}
-		return instence;
 	}
 
 	public Computer resultSetToComputer(ResultSet result) {
@@ -59,7 +57,6 @@ public class ComputerMapper {
 	}
 	
 	public ComputerDto computerToDto(Computer computer) {
-		DateMapper dateMapper = DateMapper.getInstence();
 		ComputerDto dto = new ComputerDto.ComputerDtoBuilder()
 				.withId(computer.getId())
 				.withName(computer.getName())
@@ -72,7 +69,6 @@ public class ComputerMapper {
 	}
 	
 	public Computer dtoToComputer(ComputerDto dto) throws BadEntriException {
-		DateMapper dateMapper = DateMapper.getInstence();
 		Validator validator = Validator.getInstence();
 		LocalDate introduced = dateMapper.StringToDate(dto.getIntroduced());
 		LocalDate discontinued = dateMapper.StringToDate(dto.getDiscontinued());
