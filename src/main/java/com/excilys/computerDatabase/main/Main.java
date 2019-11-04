@@ -103,7 +103,7 @@ public class Main {
 		nbPage = (nbComputer + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			ArrayList<Computer> listComputer =  computerService.getPage(limit, offset,"id");
+			ArrayList<Computer> listComputer =  computerService.getPage(limit, offset);
 		displaylistComputer(listComputer);
 		} while (navigatePage());
 	}

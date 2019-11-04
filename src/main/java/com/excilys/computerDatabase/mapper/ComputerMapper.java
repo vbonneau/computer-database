@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerDatabase.dto.ComputerDto;
@@ -15,18 +16,18 @@ import com.excilys.computerDatabase.exception.BadEntriException;
 import com.excilys.computerDatabase.validator.Validator;
 
 @Component
-public class ComputerMapper {
+public class ComputerMapper implements RowMapper<Computer> {
 
 
 	@Autowired
 	DateMapper dateMapper;
-	private ComputerMapper() {
+	public ComputerMapper() {
 
 	}
 
-	public Computer resultSetToComputer(ResultSet result) {
-		Company company = new Company();
-		Computer computer = new Computer();
+	public Computer mapRow(ResultSet result, int rowNum) {
+		Company company = null;
+		Computer computer = null;
 		try {
 			company = new Company.CompanyBuilder().withId(result.getInt("company.id")).withName(result.getString("company.name")).build();
 

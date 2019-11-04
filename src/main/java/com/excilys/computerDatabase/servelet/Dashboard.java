@@ -2,6 +2,7 @@ package com.excilys.computerDatabase.servelet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -53,8 +54,8 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		ArrayList<Computer> computers = new ArrayList<Computer>();
-		int nbComputer = computerService.count();
+		List<Computer> computers = new ArrayList<Computer>();
+		int nbComputer = computerService.count(search);
 		int newPage = actualPage;
 		int nbPage = (nbComputer + limit - 1) / limit;
 		String newPageString = request.getParameter("page");
@@ -102,8 +103,8 @@ public class Dashboard extends HttpServlet {
 		actualPage = newPage;
 		int offset = (actualPage - 1) * limit;
 		
+		//computers = computerService.getPage(limit, offset,search, order, asc);
 		computers = computerService.getPage(limit, offset,search, order, asc);
-		
 		ArrayList<ComputerDto> computersDto = new ArrayList<ComputerDto>();
 		for(Computer computer : computers){
 			computersDto.add(computerMapper.computerToDto(computer));

@@ -2,20 +2,13 @@ package com.excilys.computerDatabase.entity;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.excilys.computerDatabase.mapper.DateMapper;
-
 public class Computer {
 
 	private int id;
 	private String name;
 	private LocalDate introduced;
 	private LocalDate discontinued;
-	@Autowired
 	private Company company = new Company();
-	@Autowired
-	DateMapper dateMapper;
 
 	public int getId() {
 		return id;
@@ -60,8 +53,8 @@ public class Computer {
 	@Override
 	public String toString() {
 
-		return "Computer [id=" + id + ", name=" + name + ", introduced=" + dateMapper.dateToString(introduced) +
-				", discontinued=" + dateMapper.dateToString(discontinued) + ", Company=" + company.toString() + "]";
+		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced +
+				", discontinued=" + discontinued + ", Company=" + company.toString() + "]";
 	}
 
 	@Override

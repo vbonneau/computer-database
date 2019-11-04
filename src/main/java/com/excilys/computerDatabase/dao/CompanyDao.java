@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import com.excilys.computerDatabase.entity.Company;
 import com.excilys.computerDatabase.mapper.CompanyMapper;
+import com.excilys.computerDatabase.dao.ConnectionMySQL;
+
 
 @Repository
 public class CompanyDao {
@@ -27,7 +29,7 @@ public class CompanyDao {
 	private CompanyMapper companyMapper;
 
 	private CompanyDao() {
-
+		
 	}
 
 	public ArrayList<Company> findAll() {

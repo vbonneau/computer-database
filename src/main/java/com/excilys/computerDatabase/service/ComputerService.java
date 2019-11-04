@@ -2,6 +2,7 @@ package com.excilys.computerDatabase.service;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,22 +16,14 @@ public class ComputerService {
 	@Autowired
 	private ComputerDao dao;
 
-	public ComputerService() {
-
-	}
-
 	public ArrayList<Computer> getAll() {
 		ArrayList<Computer> listComputer = dao.findAll();
 		return listComputer;
 	}
 
-	public ArrayList<Computer> getPage(int limit, int offset, String order) {
-		ArrayList<Computer> listComputer = dao.findPage(limit, offset, order);
+	public ArrayList<Computer> getPage(int limit, int offset) {
+		ArrayList<Computer> listComputer = dao.findPage(limit, offset);
 		return listComputer;
-	}
-
-	public int count() {
-		return dao.countComputer();
 	}
 
 	public Computer getOne(int id) {
@@ -51,8 +44,8 @@ public class ComputerService {
 		return dao.deleteComputer(id);
 	}
 
-	public ArrayList<Computer> getPage(int limit, int offset, String search, String order, boolean asc) {
-		ArrayList<Computer> listComputer = dao.findPage(limit, offset,search, order, asc);
+	public List<Computer> getPage(int limit, int offset, String search, String order, boolean asc) {
+		List<Computer> listComputer = dao.findPage(limit, offset,search, order, asc);
 		return listComputer;
 	}
 

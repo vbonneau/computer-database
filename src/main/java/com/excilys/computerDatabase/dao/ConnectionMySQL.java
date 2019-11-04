@@ -3,23 +3,21 @@ package com.excilys.computerDatabase.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.springframework.stereotype.Repository;
+import javax.sql.DataSource;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class ConnectionMySQL {
 
 	private Connection conn = null;
-	String configFile = "/db.properties";
+//	String configFile = "/db.properties";
 	
-	HikariConfig cfg = new HikariConfig(configFile);
-    HikariDataSource ds = new HikariDataSource(cfg);
-
-	private ConnectionMySQL() {
-
-	}
+//	HikariConfig cfg = new HikariConfig(configFile);
+//    HikariDataSource ds = new HikariDataSource(cfg);
+	@Autowired
+	private DataSource ds;
 
 	public Connection getConnection() throws SQLException {
 		conn=ds.getConnection();
