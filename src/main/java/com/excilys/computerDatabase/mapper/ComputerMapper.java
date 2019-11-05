@@ -21,6 +21,8 @@ public class ComputerMapper implements RowMapper<Computer> {
 
 	@Autowired
 	DateMapper dateMapper;
+	@Autowired
+	Validator validator;
 	public ComputerMapper() {
 
 	}
@@ -70,14 +72,11 @@ public class ComputerMapper implements RowMapper<Computer> {
 	}
 	
 	public Computer dtoToComputer(ComputerDto dto) throws BadEntriException {
-		Validator validator = Validator.getInstence();
+		
 		LocalDate introduced = dateMapper.StringToDate(dto.getIntroduced());
 		LocalDate discontinued = dateMapper.StringToDate(dto.getDiscontinued());
 		
-		validator.checkName(dto.getName());
-		validator.chekValidDate(introduced);
-		validator.chekValidDate(discontinued);
-		validator.checkTowDate(introduced, discontinued);
+		
 		
 		Company company = new Company.CompanyBuilder()
 				.withId(dto.getCompanyId())
@@ -90,6 +89,8 @@ public class ComputerMapper implements RowMapper<Computer> {
 				.withDiscontinued(discontinued)
 				.withCompany(company)
 				.build();
+				
+		validator.checkComputer(computer);
 		
 		return computer;
 	}

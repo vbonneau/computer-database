@@ -1,7 +1,6 @@
 package com.excilys.computerDatabase.service;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +15,8 @@ public class ComputerService {
 	@Autowired
 	private ComputerDao dao;
 
-	public ArrayList<Computer> getAll() {
-		ArrayList<Computer> listComputer = dao.findAll();
-		return listComputer;
-	}
-
-	public ArrayList<Computer> getPage(int limit, int offset) {
-		ArrayList<Computer> listComputer = dao.findPage(limit, offset);
+	public List<Computer> getPage(int limit, int offset) {
+		List<Computer> listComputer = dao.findPage(limit, offset);
 		return listComputer;
 	}
 
@@ -51,6 +45,10 @@ public class ComputerService {
 
 	public int count(String search) {
 		return dao.countComputer(search);
+	}
+
+	public int count() {
+		return dao.countComputer();
 	}
 
 }

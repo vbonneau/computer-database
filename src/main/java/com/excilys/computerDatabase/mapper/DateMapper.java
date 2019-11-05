@@ -24,7 +24,7 @@ public class DateMapper {
 			date = LocalDate.parse(dateString);
 			return date;
 		} catch (DateTimeException e) {
-			throw new BadEntriException("date fprmat not good");
+			throw new BadEntriException("date format not good");
 		}
 	}
 

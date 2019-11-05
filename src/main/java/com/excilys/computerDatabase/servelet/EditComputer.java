@@ -2,6 +2,7 @@ package com.excilys.computerDatabase.servelet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -53,7 +54,7 @@ public class EditComputer extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ArrayList<Company> companys = new ArrayList<Company>();
+		List<Company> companys = new ArrayList<Company>();
 		ArrayList<String> errors = new ArrayList<String>();
 		Computer computer;
 		String idString = request.getParameter("id");
@@ -61,7 +62,7 @@ public class EditComputer extends HttpServlet {
 		try {
 			id = Integer.parseInt(idString);
 		} catch (NumberFormatException e) {
-			
+			errors.add("the computer id must be a integer");
 		}
 		computer = computerService.getOne(id);
 		if(computer.getId() == 0) {
@@ -89,7 +90,7 @@ public class EditComputer extends HttpServlet {
 		try {
 			id = Integer.parseInt(request.getParameter("id"));
 		} catch (NumberFormatException e) {
-			
+			errors.add("the computer id must be a integer");
 		}
 		
 		ComputerDto dto = new ComputerDto.ComputerDtoBuilder().withName(request.getParameter("computerName"))

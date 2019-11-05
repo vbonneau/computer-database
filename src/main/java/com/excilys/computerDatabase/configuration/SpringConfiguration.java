@@ -12,10 +12,21 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.context.AbstractContextLoaderInitializer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 
 @Configuration
-@ComponentScan(basePackages = { "com.excilys.computerDatabase" })
+@ComponentScan(basePackages = { 
+		"com.excilys.computerDatabase.configuration",
+		"com.excilys.computerDatabase.dao",
+		"com.excilys.computerDatabase.mapper",
+		"com.excilys.computerDatabase.servelet",
+		"com.excilys.computerDatabase.service",
+		"com.excilys.computerDatabase.validator",
+		"com.excilys.computerDatabase.page",
+		"com.excilys.computerDatabase.main"
+})
 @PropertySource({ "classpath:/db.properties" })
 public class SpringConfiguration extends AbstractContextLoaderInitializer {
 

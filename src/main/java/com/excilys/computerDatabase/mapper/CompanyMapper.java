@@ -3,19 +3,20 @@ package com.excilys.computerDatabase.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerDatabase.entity.Company;
 
 @Component
-public class CompanyMapper {
+public class CompanyMapper implements RowMapper<Company> {
 
 	private CompanyMapper() {
 
 	}
 
 
-	public Company resultSetToCompany(ResultSet result) {
+	public Company mapRow(ResultSet result, int rowNum) {
 		Company company;
 
 		try {

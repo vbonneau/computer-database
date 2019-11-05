@@ -15,9 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import com.excilys.computerDatabase.dto.ComputerDto;
-import com.excilys.computerDatabase.entity.Computer;
+
+import com.excilys.computerDatabase.exception.BadEntriException;
 import com.excilys.computerDatabase.mapper.ComputerMapper;
+import com.excilys.computerDatabase.page.Page;
 import com.excilys.computerDatabase.service.ComputerService;
 
 /**
@@ -27,18 +28,16 @@ import com.excilys.computerDatabase.service.ComputerService;
 @Controller
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private int limit = 10;
-	private static int actualPage = 1;
-	String search="";
-	String order = "computer.name";
-	Boolean asc = true;
 	@Autowired
 	ComputerService computerService;
 	@Autowired
 	ComputerMapper computerMapper;
+	@Autowired
+	Page page;
     /**
      * @see HttpServlet#HttpServlet()
      */
+
     public Dashboard() {
         super();
     }
@@ -54,84 +53,54 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		List<Computer> computers = new ArrayList<Computer>();
-		int nbComputer = computerService.count(search);
-		int newPage = actualPage;
-		int nbPage = (nbComputer + limit - 1) / limit;
-		String newPageString = request.getParameter("page");
-		String limitString = request.getParameter("limit");
-		String newSearch = request.getParameter("search");
-		String newOrder = request.getParameter("order");
+		List<String> errors = new ArrayList<String>();
 		
-		if (newSearch != null) {
-			search = newSearch;
+		//page.ubdate(request.getParameterMap());
+		try {
+			page.setActualPageString(request.getParameter("page"));
+			page.setLimitString(request.getParameter("limit"));
+		} catch (BadEntriException e) {
+			errors.add(e.getMessage());
+			request.setAttribute("errors", errors);
 		}
+		page.setSearch(request.getParameter("search"));
+		page.setOrder(request.getParameter("order"));
 		
-		if (newOrder != null) {
-			order = newOrder;
-			asc = !asc;
-		}
-		
-		if(newPageString != null) {
-			try {
-				newPage = Integer.parseInt(newPageString);
-			} catch (NumberFormatException e) {
-				this.getServletContext().getRequestDispatcher( "/views/500.jsp" ).forward( request, response );
-				return;
-			}
-		}
-		
-		if(limitString != null ) {
-			try {
-				limit = Integer.parseInt(limitString);
-			} catch(NumberFormatException e) {
-				this.getServletContext().getRequestDispatcher( "/views/500.jsp" ).forward( request, response );
-				return;
-			}
-		}
-		
-
-		nbComputer = computerService.count(search);
-		nbPage = (nbComputer + limit - 1) / limit;
-		
-		if(newPage < 1 ) {
-			newPage = 1;
-		}
-		if(newPage > nbPage) {
-			newPage = nbPage;
-		}
-		actualPage = newPage;
-		int offset = (actualPage - 1) * limit;
-		
-		//computers = computerService.getPage(limit, offset,search, order, asc);
-		computers = computerService.getPage(limit, offset,search, order, asc);
-		ArrayList<ComputerDto> computersDto = new ArrayList<ComputerDto>();
-		for(Computer computer : computers){
-			computersDto.add(computerMapper.computerToDto(computer));
-		}
-		
-		request.setAttribute("computers", computersDto );
-		request.setAttribute("nbPage", nbPage);
-		request.setAttribute("page", actualPage);
-		request.setAttribute("nbComputer", nbComputer);
+		request.setAttribute("computers", page.getComputersDto() );
+		request.setAttribute("nbPage", page.getNbPage());
+		request.setAttribute("page", page.getActualPage());
+		request.setAttribute("nbComputer", page.getNbComputer());
 		this.getServletContext().getRequestDispatcher( "/views/dashboard.jsp" ).forward( request, response );
 	}
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String[] ids = request.getParameter("selection").split(",");
+		List<String> errors = new ArrayList<String>();
+		List<String> success = new ArrayList<String>();
 		int id = 0;
-		for(String idString : ids) {
+		for (String idString : ids) {
 			try {
 				id = Integer.parseInt(idString);
 				
 			} catch (NumberFormatException e) {
-				
+				errors.add("errror the list contain : " + idString + ". He connot be an id because it's not an integer" );
 			}
-			computerService.deleteComputer(id);
+			
+			if (computerService.deleteComputer(id)){
+				success.add("errror the computer with id \"" + idString + "\" has been deleted");
+				
+			} else {
+				errors.add("errror the computer with id \"" + idString + "\" has not been deleted" );
+			}
+			
 		}
+		page.updateNbComputer();
+		request.setAttribute("erros", errors);
+		request.setAttribute("listSuccess", success);
 		doGet(request, response);
 	}
 

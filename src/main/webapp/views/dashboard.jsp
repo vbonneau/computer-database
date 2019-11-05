@@ -20,6 +20,21 @@
 
     <section id="main">
         <div class="container">
+	        <div id="alertMessage" class="alert alert-danger" <c:if test="${ errors == null }"> style="display: none" </c:if>>
+				<c:forEach var="error" items="${ errors }">
+					${ error }
+					<br>
+				</c:forEach>
+			</div>
+	        
+	        <c:if test="${ listSuccess != null }">
+	        	<div id="success" class="alert alert-success" <c:if test="${ listSuccess == null }"> style="display: none" </c:if>>
+					<c:forEach var="success" items="${ listSuccess }">
+					${ success }
+					<br>
+				</c:forEach>
+				</div>
+	        </c:if>
             <h1 id="homeTitle">
                 ${ nbComputer } Computers found
             </h1>

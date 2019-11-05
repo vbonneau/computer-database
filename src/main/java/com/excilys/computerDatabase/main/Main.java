@@ -1,9 +1,10 @@
 package com.excilys.computerDatabase.main;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.excilys.computerDatabase.entity.Company;
 import com.excilys.computerDatabase.entity.Computer;
@@ -12,6 +13,7 @@ import com.excilys.computerDatabase.mapper.DateMapper;
 import com.excilys.computerDatabase.service.CompanyService;
 import com.excilys.computerDatabase.service.ComputerService;
 
+@Component
 public class Main {
 
 	private static Scanner sc = new Scanner(System.in);
@@ -39,6 +41,7 @@ public class Main {
 			System.out.println("4 - ajouter un ordinateur a la base de donnée");
 			System.out.println("5 - modifié les donnée d'un ordinateur");
 			System.out.println("6 - suprimer un ordinateur de la base de donnée");
+			System.out.println("7 - suprimer une compagnie de la base de donnée");
 			System.out.println("0 - quitter");
 
 			command = sc.nextLine();
@@ -86,7 +89,7 @@ public class Main {
 
 	private static void deleteCompany() {
 		int id = 0;
-		System.out.println("veuillez entrer l'id de l'ordinateur");
+		System.out.println("veuillez entrer l'id de la compagnie");
 		if (sc.hasNextInt()) {
 			id = sc.nextInt();
 			sc.nextLine();
@@ -103,7 +106,7 @@ public class Main {
 		nbPage = (nbComputer + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			ArrayList<Computer> listComputer =  computerService.getPage(limit, offset);
+			List<Computer> listComputer =  computerService.getPage(limit, offset);
 		displaylistComputer(listComputer);
 		} while (navigatePage());
 	}
@@ -113,7 +116,7 @@ public class Main {
 		nbPage = (nbCompany + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			ArrayList<Company> listCompany =  companyService.getPage(limit, offset);
+			List<Company> listCompany =  companyService.getPage(limit, offset);
 		displaylistCompany(listCompany);
 		} while (navigatePage());
 
@@ -155,13 +158,13 @@ public class Main {
 		return true;
 	}
 
-	private static void displaylistCompany(ArrayList<Company> listCompany) {
+	private static void displaylistCompany(List<Company> listCompany) {
 		for (Company company : listCompany) {
 			System.out.println(company.toString());
 		}
 	}
 
-	private static void displaylistComputer(ArrayList<Computer> listComputer) {
+	private static void displaylistComputer(List<Computer> listComputer) {
 		for (Computer computer : listComputer) {
 			System.out.println(computer.toString());
 		}

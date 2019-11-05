@@ -2,6 +2,7 @@ package com.excilys.computerDatabase.servelet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -19,6 +20,7 @@ import com.excilys.computerDatabase.entity.Company;
 import com.excilys.computerDatabase.entity.Computer;
 import com.excilys.computerDatabase.exception.BadEntriException;
 import com.excilys.computerDatabase.mapper.ComputerMapper;
+import com.excilys.computerDatabase.page.Page;
 import com.excilys.computerDatabase.service.CompanyService;
 import com.excilys.computerDatabase.service.ComputerService;
 
@@ -37,13 +39,14 @@ public class AddComputer extends HttpServlet {
 	CompanyService companyService;
 	@Autowired
 	ComputerMapper computerMapper;
+	@Autowired
+	Page page;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public AddComputer() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
     @Override
@@ -57,7 +60,7 @@ public class AddComputer extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ArrayList<Company> companys = new ArrayList<Company>();
+		List<Company> companys = new ArrayList<Company>();
 		companys = companyService.getAll();
 		request.setAttribute("companys",companys);
 		this.getServletContext().getRequestDispatcher( "/views/addComputer.jsp" ).forward( request, response );
@@ -68,7 +71,6 @@ public class AddComputer extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		errors = new ArrayList<String>();
-		System.out.println(request.getParameter("id"));
 		int companyId =0;
 		
 		try {
@@ -89,9 +91,10 @@ public class AddComputer extends HttpServlet {
 			errors.add(e.getMessage());
 			computer = new Computer.ComputerBuilder().build();
 		}
-		if(errors.size() == 0 && computerService.addCompeuter(computer)) {
+		if(errors.isEmpty() && computerService.addCompeuter(computer)) {
 			request.setAttribute("success","the computer has been well add");
 			errors = null;
+			page.updateNbComputer();
 		} else {
 			errors.add("add fail");
 			request.setAttribute("computer", computer);
