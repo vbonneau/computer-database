@@ -24,8 +24,8 @@ import com.excilys.computerDatabase.service.ComputerService;
 /**
  * Servlet implementation class Menu
  */
-@WebServlet("/dashboard")
-@Controller
+//@WebServlet("/dashboard")
+//@Controller
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@Autowired
@@ -55,7 +55,6 @@ public class Dashboard extends HttpServlet {
 		
 		List<String> errors = new ArrayList<String>();
 		
-		//page.ubdate(request.getParameterMap());
 		try {
 			page.setActualPageString(request.getParameter("page"));
 			page.setLimitString(request.getParameter("limit"));
@@ -66,7 +65,7 @@ public class Dashboard extends HttpServlet {
 		page.setSearch(request.getParameter("search"));
 		page.setOrder(request.getParameter("order"));
 		
-		request.setAttribute("computers", page.getComputersDto() );
+		request.setAttribute("computers", page.getComputers() );
 		request.setAttribute("nbPage", page.getNbPage());
 		request.setAttribute("page", page.getActualPage());
 		request.setAttribute("nbComputer", page.getNbComputer());

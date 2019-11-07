@@ -1,5 +1,6 @@
 package com.excilys.computerDatabase.page;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,8 +21,8 @@ public class Page {
 	private static int actualPage = 1;
 	private int nbComputer = 0;
 	private String search="";
-	private String order = "computer.name";
-	private Boolean asc = true;
+	private String order = "name";
+	private boolean asc = true;
 	private ComputerService computerService;
 	private int nbPage;
 	private int offset;
@@ -32,11 +33,6 @@ public class Page {
 	public Page(ComputerService computerService) {
 		this.computerService = computerService;
 		updateNbComputer();
-	}
-	
-	public void ubdate(Map<String, String[]> parameterMap) {
-		System.out.println(parameterMap);
-		
 	}
 
 	public int getLimit() {
@@ -98,6 +94,10 @@ public class Page {
 		List<Computer> computers = computerService.getPage(limit, offset,search, order, asc);
 		return computers.stream().map(computer -> computerMapper.computerToDto(computer)).collect(Collectors.toList());
 	}
+	
+	public List<Computer> getComputers() {
+		return computerService.getPage(limit, offset,search, order, asc);
+	}
 
 	public Object getNbPage() {
 		return nbPage;
@@ -125,6 +125,35 @@ public class Page {
 		if(newPage < 1 || newPage > nbPage) {
 			throw new BadEntriException("page not correct");
 		}
+	}
+
+	public void update(String param, String value) throws BadEntriException {
+		if (param != null && value != null) {
+			switch (param) {
+			case "limit":
+				setLimitString(value);
+				break;
+			case "page":
+				setActualPageString(value);
+				break;
+			case "search":
+				setSearch(value);
+			case "order":
+				setOrder(value);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	public Map<String,Object> getInfo() {
+		Map<String,Object> map = new HashMap<>();
+		map.put("computers", getComputers());
+		map.put("nbPage", getNbPage());
+		map.put("page", getActualPage());
+		map.put("nbComputer", getNbComputer());
+		return map;
 	}
 	
 }

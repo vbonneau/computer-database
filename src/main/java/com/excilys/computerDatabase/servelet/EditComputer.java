@@ -26,8 +26,8 @@ import com.excilys.computerDatabase.service.ComputerService;
 /**
  * Servlet implementation class EditComputer
  */
-@WebServlet("/editComputer")
-@Controller
+//@WebServlet("/editComputer")
+//@Controller
 public class EditComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
      @Autowired

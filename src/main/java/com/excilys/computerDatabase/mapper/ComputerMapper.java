@@ -66,7 +66,6 @@ public class ComputerMapper implements RowMapper<Computer> {
 				.withDiscontinued(dateMapper.dateToString(computer.getDiscontinued()))
 				.withIntroduced(dateMapper.dateToString(computer.getIntroduced()))
 				.withCompanyId(computer.getCompany().getId())
-				.withCompanyName(computer.getCompany().getName())
 				.build();
 		return dto;
 	}
@@ -80,7 +79,6 @@ public class ComputerMapper implements RowMapper<Computer> {
 		
 		Company company = new Company.CompanyBuilder()
 				.withId(dto.getCompanyId())
-				.withName(dto.getCompanyName())
 				.build();
 		Computer computer = new Computer.ComputerBuilder()
 				.withId(dto.getId())

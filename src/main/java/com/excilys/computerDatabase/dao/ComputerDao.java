@@ -80,6 +80,7 @@ public class ComputerDao {
 				.addValue("introduced", computer.getIntroduced())
 				.addValue("discontinued", computer.getDiscontinued())
 				.addValue("company", idCompany == 0 ? null : idCompany);
+		System.out.println(parameters);
 		
 		if(jdbcTemplate.update(query,parameters) == 1) {
 			return true;

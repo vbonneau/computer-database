@@ -1,5 +1,8 @@
 package com.excilys.computerDatabase.configuration;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.context.AbstractContextLoaderInitializer;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
 @Configuration
@@ -25,17 +27,13 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 		"com.excilys.computerDatabase.service",
 		"com.excilys.computerDatabase.validator",
 		"com.excilys.computerDatabase.page",
-		"com.excilys.computerDatabase.main"
+		"com.excilys.computerDatabase.main",
+		"com.excilys.computerDatabase.controller"
 })
 @PropertySource({ "classpath:/db.properties" })
-public class SpringConfiguration extends AbstractContextLoaderInitializer {
+@EnableWebMvc
+public class SpringConfiguration implements WebApplicationInitializer {
 
-    @Override
-    protected WebApplicationContext createRootApplicationContext() {
-    AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-    rootContext.register(SpringConfiguration.class);
-    return rootContext;
-    }
     
     @Autowired
     private Environment env;
@@ -49,5 +47,19 @@ public class SpringConfiguration extends AbstractContextLoaderInitializer {
        dataSource.setPassword(env.getProperty("dataSource.password"));
        return dataSource;
     }
-
+    
+    @Override
+    public void onStartup(ServletContext ctx) throws ServletException {
+        // Init application context
+        AnnotationConfigWebApplicationContext webCtx
+            = new AnnotationConfigWebApplicationContext();
+        webCtx.register(SpringConfiguration.class,SpringMvcConfiguration.class);
+        webCtx.setServletContext(ctx);
+        // Init dispatcher servlet
+        ServletRegistration.Dynamic servlet
+            = ctx.addServlet("springapp", new DispatcherServlet(webCtx));
+        servlet.setLoadOnStartup(1);
+        servlet.addMapping("/");
+    }
+        
 }

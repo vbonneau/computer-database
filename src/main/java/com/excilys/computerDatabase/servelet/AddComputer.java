@@ -28,7 +28,7 @@ import com.excilys.computerDatabase.service.ComputerService;
 /**
  * Servlet implementation class AddComputer
  */
-@WebServlet("/addComputer")
+//@WebServlet("/addComputer")
 @Controller
 public class AddComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
