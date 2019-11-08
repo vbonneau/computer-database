@@ -24,24 +24,23 @@ public class DachboardController {
 	private ComputerService computerService;
 
 	@GetMapping("/dashboard")
-	public ModelAndView dashboard(@RequestParam(value = "param",required = false) String param,@RequestParam(value = "value",required = false) String value) {
+	public ModelAndView dashboard(@RequestParam(value = "param", required = false) String param,
+			@RequestParam(value = "value", required = false) String value) {
 		ModelAndView mv = new ModelAndView();
-		
+
 		try {
-			page.update(param,value);
+			page.update(param, value);
 		} catch (BadEntriException e) {
-			mv.getModel().put("error",new ArrayList<String>().add(e.getMessage()));
+			mv.getModel().put("error", new ArrayList<String>().add(e.getMessage()));
 		}
-		
+
 		mv.getModel().putAll(page.getInfo());
 		mv.setViewName("dashboard");
 		return mv;
 	}
-	
-	
-	
+
 	@DeleteMapping("/delete")
-	public ModelAndView deleteListId(@RequestParam(value = "selection",required = false) String selection) {
+	public ModelAndView deleteListId(@RequestParam(value = "selection", required = false) String selection) {
 		String[] ids = selection.split(",");
 		List<String> errors = new ArrayList<String>();
 		List<String> success = new ArrayList<String>();
@@ -49,21 +48,21 @@ public class DachboardController {
 			delete(idString, errors, success);
 		}
 		page.updateNbComputer();
-		ModelAndView mv = dashboard(null,null);
+		ModelAndView mv = dashboard(null, null);
 		mv.getModelMap().put("listError", errors);
 		mv.getModelMap().put("listSuccess", success);
 		return mv;
 	}
-	
+
 	private void delete(String id, List<String> errors, List<String> success) {
 		try {
-			if (computerService.deleteComputer(Integer.parseInt(id))){
+			if (computerService.deleteComputer(Integer.parseInt(id))) {
 				success.add("error : the computer with id \"" + id + "\" has been deleted");
 			} else {
-				errors.add("the computer with id \"" + id + "\" has not been deleted" );
+				errors.add("the computer with id \"" + id + "\" has not been deleted");
 			}
 		} catch (NumberFormatException e) {
-			errors.add("errror the list contain : " + id + ". He connot be an id because it's not an integer" );
+			errors.add("errror the list contain : " + id + ". He connot be an id because it's not an integer");
 		}
 	}
 }

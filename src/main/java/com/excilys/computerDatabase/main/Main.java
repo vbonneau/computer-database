@@ -4,12 +4,18 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import com.excilys.computerDatabase.configuration.SpringConfigurationCli;
 import com.excilys.computerDatabase.entity.Company;
 import com.excilys.computerDatabase.entity.Computer;
 import com.excilys.computerDatabase.exception.BadEntriException;
 import com.excilys.computerDatabase.mapper.DateMapper;
+import com.excilys.computerDatabase.page.Page;
 import com.excilys.computerDatabase.service.CompanyService;
 import com.excilys.computerDatabase.service.ComputerService;
 
@@ -23,15 +29,19 @@ public class Main {
 	private static int actualPage = 1;
 	private static String command;
 	@Autowired
-	private static CompanyService companyService;
+	private CompanyService companyService;
 	@Autowired
-	private static ComputerService computerService;
+	private ComputerService computerService;
 	@Autowired
-	private static DateMapper dateMapper;
+	private DateMapper dateMapper;
 
-
+	
 	public static void main(String[] args) throws ClassNotFoundException {
 		boolean testContinue = true;
+		System.out.println("main");
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfigurationCli.class);
+		
+		Main main = ctx.getBean(Main.class);
 
 		while (testContinue) {
 
@@ -48,31 +58,31 @@ public class Main {
 			switch (command) {
 			case "1":
 			case "List computers":
-				listComputer();
+				main.listComputer();
 				break;
 			case "2":
 			case "List companies":
-				listCompany();
+				main.listCompany();
 				break;
 			case "3":
 			case "Show computer details":
-				displayOneComputer();
+				main.displayOneComputer();
 				break;
 			case "4":
 			case "Create a computer":
-				creatComputer();
+				main.creatComputer();
 				break;
 			case "5":
 			case "Update a computer":
-				updateComputer();
+				main.updateComputer();
 				break;
 			case "6":
 			case "Delete a computer":
-				deleteComputer();
+				main.deleteComputer();
 				break;
 			case "7":
 			case "Delete a company":
-				deleteCompany();
+				main.deleteCompany();
 				break;
 			case "0":
 			case "quit":
@@ -84,10 +94,11 @@ public class Main {
 		}
 		sc.close();
 		System.out.println("good bye");
+		
 	}
 
 
-	private static void deleteCompany() {
+	private void deleteCompany() {
 		int id = 0;
 		System.out.println("veuillez entrer l'id de la compagnie");
 		if (sc.hasNextInt()) {
@@ -101,7 +112,7 @@ public class Main {
 	}
 
 
-	private static void listComputer() {
+	private void listComputer() {
 		int nbComputer = computerService.count();
 		nbPage = (nbComputer + limit - 1) / limit;
 		do {
@@ -111,7 +122,7 @@ public class Main {
 		} while (navigatePage());
 	}
 
-	private static void listCompany() {
+	private void listCompany() {
 		int nbCompany = companyService.count();
 		nbPage = (nbCompany + limit - 1) / limit;
 		do {
@@ -122,7 +133,7 @@ public class Main {
 
 	}
 
-	private static boolean navigatePage() {
+	private boolean navigatePage() {
 		System.out.println("page " + actualPage + "/" + nbPage);
 		System.out.println("veuiller entrer le numero de la page,+ ou - pour changer de page,-1 poir quitter");
 		int newPage = actualPage;
@@ -158,19 +169,19 @@ public class Main {
 		return true;
 	}
 
-	private static void displaylistCompany(List<Company> listCompany) {
+	private void displaylistCompany(List<Company> listCompany) {
 		for (Company company : listCompany) {
 			System.out.println(company.toString());
 		}
 	}
 
-	private static void displaylistComputer(List<Computer> listComputer) {
+	private void displaylistComputer(List<Computer> listComputer) {
 		for (Computer computer : listComputer) {
 			System.out.println(computer.toString());
 		}
 	}
 
-	private static int displayOneComputer() {
+	private int displayOneComputer() {
 		int id = 0;
 		Computer computer;
 		System.out.println("veuillez entrer l'id de l'ordinateur");
@@ -190,13 +201,13 @@ public class Main {
 	}
 
 
-	private static void creatComputer() {
+	private void creatComputer() {
 		Computer computer = askInfoComputer();
 		System.out.println(computer.toString());
 		computerService.addCompeuter(computer);
 	}
 
-	private static void updateComputer() {
+	private void updateComputer() {
 		int id = displayOneComputer();
 		if (id == 0) {
 			return;
@@ -207,7 +218,7 @@ public class Main {
 		computerService.updateComputer(computer);
 	}
 
-	private static void deleteComputer() {
+	private void deleteComputer() {
 		int id = displayOneComputer();
 		if (id == 0) {
 			return;
@@ -215,7 +226,7 @@ public class Main {
 		computerService.deleteComputer(id);
 	}
 
-	private static Computer askInfoComputer() {
+	private Computer askInfoComputer() {
 		Computer computer = new Computer();
 		LocalDate introduced;
 		LocalDate discontinued;
@@ -232,7 +243,7 @@ public class Main {
 		return computer;
 	}
 
-	private static String askComputerName() {
+	private String askComputerName() {
 		String name;
 		do {
 			System.out.println("veuillez entrer le nom de l'ordinateur");
@@ -242,7 +253,7 @@ public class Main {
 		return name;
 	}
 
-	private static LocalDate askDate(String sentence) {
+	private LocalDate askDate(String sentence) {
 		LocalDate date = null;
 		System.out.println("veuillez entrer la date à laquelle l'ordinateur à été " + sentence + " ( format jour/mois/année )");
 		String dateString = sc.nextLine();
@@ -270,7 +281,7 @@ public class Main {
 		}
 	}
 
-	private static Company askCompany() {
+	private Company askCompany() {
 		Company company = new Company();
 		String companyName;
 		System.out.println("veuillez entrer le nom de la compagni qui fabriqué l'ordinateur");

@@ -1,21 +1,21 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page isELIgnored="false"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Computer Database</title>
+<title><spring:message code="headTitle"/></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
-<link href="/resources/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="/resources/css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="/resources/css/main.css" rel="stylesheet" media="screen">
+<link href="<c:url value = "/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value = "/resources/css/font-awesome.css"/>" media="screen">
+<link href="<c:url value = "/resources/css/main.css"/>" rel="stylesheet" media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="dashboard"> <spring:message code="applicationName"/></a>
 		</div>
 	</header>
 	<section id="main">
@@ -38,7 +38,7 @@
 					<h1>Edit Computer</h1>
 
 					<form:form action="editComputer" method="POST"
-						modelAttribute="computer">
+						modelAttribute="computerDto">
 						<fieldset>
 							<div class="form-group"
 								style="visibility: hidden; position: absolute">
@@ -84,7 +84,7 @@
 		</div>
 	</section>
 </body>
-<script src="/resources/js/jquery.min.js"></script>
-<script src="/resources/js/bootstrap.min.js"></script>
+<script src="<c:url value = "/resources/js/jquery.min.js"/>"></script>
+<script src="<c:url value = "/resources/js/bootstrap.min.js"/>"></script>
 <script src="/resources/js/addComputer.js"></script>
 </html>

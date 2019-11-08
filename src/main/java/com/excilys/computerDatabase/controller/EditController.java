@@ -40,14 +40,14 @@ public class EditController {
 		ModelAndView mv = new ModelAndView();
 		
 		mv.getModelMap().put("companys", companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
-		mv.getModelMap().put("computer", computerMapper.computerToDto(computerService.getOne(id)));
+		mv.getModelMap().put("computerDto", computerMapper.computerToDto(computerService.getOne(id)));
 		
 		mv.setViewName("editComputer");
 		return mv;
 	}
 	
 	@PostMapping("/editComputer")
-	public ModelAndView editComputer(@ModelAttribute("computer") ComputerDto computerDto){
+	public ModelAndView editComputer(@ModelAttribute("computerDto") ComputerDto computerDto){
 		System.out.println(computerDto);
 		ModelAndView mv = new ModelAndView();
 		ArrayList<String> errors = new ArrayList<String>();
