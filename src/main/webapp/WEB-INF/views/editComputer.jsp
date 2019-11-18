@@ -21,8 +21,8 @@
 	<section id="main">
 		<div class="container">
 			<div id="alertMessage" class="alert alert-danger"
-				<c:if test="${ errors == null }"> style="display: none" </c:if>>
-				<c:forEach var="error" items="${ errors }">
+				<c:if test="${ listErrors == null }"> style="display: none" </c:if>>
+				<c:forEach var="error" items="${ listErrors }">
 					${ error }
 					<br>
 				</c:forEach>

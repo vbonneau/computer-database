@@ -22,9 +22,9 @@
 
     <section id="main">
         <div class="container">
-	        <div id="alertMessage" class="alert alert-danger" <c:if test="${ listerrors == null }"> style="display: none" </c:if>>
-				<c:forEach var="error" items="${ listerrors }">
-					${ listerror }
+	        <div id="alertMessage" class="alert alert-danger" <c:if test="${ listErrors == null }"> style="display: none" </c:if>>
+				<c:forEach var="error" items="${ listErrors }">
+					${ error }
 					<br>
 				</c:forEach>
 			</div>

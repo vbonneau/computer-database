@@ -2,14 +2,38 @@ package com.excilys.computerDatabase.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+
+
+@Entity
+@Table(name="computer")
 public class Computer {
 
+	@Id
+	@Column(name="id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	@Column(name="name")
 	private String name;
+	@Column(name="introduced")
 	private LocalDate introduced;
+	@Column(name="discontinued")
 	private LocalDate discontinued;
-	private Company company = new Company();
+	@OneToOne
+	@JoinColumn(name="company_id")
+	private Company company;
 
+	
 	public int getId() {
 		return id;
 	}
@@ -53,8 +77,9 @@ public class Computer {
 	@Override
 	public String toString() {
 
+		String displayCompany = company == null? null:company.toString();
 		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced +
-				", discontinued=" + discontinued + ", Company=" + company.toString() + "]";
+				", discontinued=" + discontinued + ", Company=" + displayCompany + "]";
 	}
 
 	@Override

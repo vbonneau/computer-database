@@ -34,48 +34,51 @@ public class EditController {
 	Page page;
 	@Autowired
 	DachboardController dachboard;
-	
+
 	@GetMapping("/editComputer")
-	public ModelAndView getEditComputer(@RequestParam(value = "id") Integer id){
+	public ModelAndView getEditComputer(@RequestParam(value = "id") Integer id) {
 		ModelAndView mv = new ModelAndView();
-		
-		mv.getModelMap().put("companys", companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
+
+		mv.getModelMap().put("companys",
+				companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
 		mv.getModelMap().put("computerDto", computerMapper.computerToDto(computerService.getOne(id)));
-		
+
 		mv.setViewName("editComputer");
 		return mv;
 	}
-	
+
 	@PostMapping("/editComputer")
-	public ModelAndView editComputer(@ModelAttribute("computerDto") ComputerDto computerDto){
+	public ModelAndView editComputer(@ModelAttribute("computerDto") ComputerDto computerDto) {
 		System.out.println(computerDto);
-		ModelAndView mv = new ModelAndView();
+		ModelAndView mv;
 		ArrayList<String> errors = new ArrayList<String>();
 		ArrayList<String> success = new ArrayList<String>();
 		Computer computer;
-		
+
 		try {
 			computer = computerMapper.dtoToComputer(computerDto);
 		} catch (BadEntriException e) {
 			errors.add(e.getMessage());
-			computer = new Computer.ComputerBuilder().build();
+			computer = new Computer();
 		}
 		System.out.println(computer);
-		
-		if(errors.isEmpty() && computerService.updateComputer(computer)) {
+
+		if (errors.isEmpty() && computerService.updateComputer(computer)) {
 			success.add("the computer " + computer.getName() + " has been well add");
-			mv.getModelMap().put("listSuccess",success);
+			mv = getEditComputer(computerDto.getId());
+			mv.getModelMap().put("listSuccess", success);
 			errors = null;
 			page.updateNbComputer();
 		} else {
 			errors.add("add fail");
+			mv = new ModelAndView("editComputer");
+			mv.getModel().put("computer", computerDto);
+			mv.getModelMap().put("companys",
+					companyService.getAll().stream().collect(Collectors.toMap(Company::getId,
+					Company::getName)));
 			mv.getModelMap().put("listErrors", errors);
 		}
-		
-		mv.getModel().put("computer", computerDto);
-		mv.setViewName("editComputer");
-		mv.getModelMap().put("companys", companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
-		
+
 		return mv;
 	}
 }

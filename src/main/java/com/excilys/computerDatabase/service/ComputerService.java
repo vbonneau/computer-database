@@ -1,6 +1,5 @@
 package com.excilys.computerDatabase.service;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,15 +38,15 @@ public class ComputerService {
 	}
 
 	public List<Computer> getPage(int limit, int offset, String search, String order, boolean asc) {
-		List<Computer> listComputer = dao.findPage(limit, offset,search, order, asc);
+		List<Computer> listComputer = dao.findPage(limit, offset, search, order, asc);
 		return listComputer;
 	}
 
-	public int count(String search) {
+	public long count(String search) {
 		return dao.countComputer(search);
 	}
 
-	public int count() {
+	public long count() {
 		return dao.countComputer();
 	}
 

@@ -36,42 +36,49 @@ public class AddController {
 	Page page;
 	@Autowired
 	DachboardController dachboard;
-	
+
 	@GetMapping("/addComputer")
 	public ModelAndView getAddComputer() throws ServletException, IOException {
 		ModelAndView mv = new ModelAndView();
-		mv.getModelMap().put("companys", companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
+		mv.getModelMap().put("companys",
+				companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
 		mv.setViewName("addComputer");
-		mv.getModelMap().put("computerDto", new Computer.ComputerBuilder().build());
+		mv.getModelMap().put("computerDto", new ComputerDto());
 		return mv;
 	}
-	
+
 	@PostMapping("/addComputer")
-	public ModelAndView addComputer(@ModelAttribute("computerDto")ComputerDto computerDto) throws ServletException, IOException {
+	public ModelAndView addComputer(@ModelAttribute("computerDto") ComputerDto computerDto)
+			throws ServletException, IOException {
 		System.out.println("post");
 		System.out.println(computerDto);
-		ModelAndView mv = dachboard.dashboard(null, null);
+		ModelAndView mv;
 		ArrayList<String> errors = new ArrayList<String>();
 		ArrayList<String> success = new ArrayList<String>();
 		Computer computer;
-		
+
 		try {
 			computer = computerMapper.dtoToComputer(computerDto);
 		} catch (BadEntriException e) {
 			errors.add(e.getMessage());
-			computer = new Computer.ComputerBuilder().build();
+			computer = new Computer();
 		}
-		
-		if(errors.isEmpty() && computerService.addCompeuter(computer)) {
+
+		if (errors.isEmpty() && computerService.addCompeuter(computer)) {
 			success.add("the computer " + computer.getName() + " has been well add");
-			mv.getModelMap().put("listSuccess",success);
+			mv = dachboard.dashboard(null, null);
+			mv.getModelMap().put("listSuccess", success);
 			errors = null;
 			page.updateNbComputer();
 		} else {
 			errors.add("add fail");
+			mv = new ModelAndView("addComputer");
+			mv.getModelMap().put("computerDto", computerDto);
+			mv.getModelMap().put("companys",
+					companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
 			mv.getModelMap().put("listErrors", errors);
 		}
-		
+
 		return mv;
 	}
 }

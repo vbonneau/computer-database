@@ -20,46 +20,47 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 import org.openqa.selenium.JavascriptExecutor;
 
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration(classes= {SpringConfiguration.class})
+//@RunWith( SpringJUnit4ClassRunner.class )
+//@ContextConfiguration(classes= {SpringConfiguration.class})
 public class addComputerTest {
-  private WebDriver driver;
-  JavascriptExecutor js;
-  
-  @Before
-  public void setUp() {
-	  WebDriverManager.chromedriver().version("77.0.3865.40").setup();
-    driver = new ChromeDriver();
-    
-    js = (JavascriptExecutor) driver;
-  }
-  
-  @After
-  public void tearDown() {
-    driver.quit();
-  }
-  
-  @Test
-  public void addTest() {
-    driver.get("http://localhost:8080/computer-database/dashboard");
-    driver.manage().window().setSize(new Dimension(876, 691));
-    driver.findElement(By.id("addComputer")).click();
-    driver.findElement(By.name("computerName")).click();
-    driver.findElement(By.name("computerName")).sendKeys("test");
-    driver.findElement(By.id("introduced")).click();
-    driver.findElement(By.id("introduced")).sendKeys("2019-10-23");
-    driver.findElement(By.id("discontinued")).click();
-    driver.findElement(By.id("discontinued")).sendKeys("2019-10-25");
-    driver.findElement(By.name("companyId")).click();
-    {
-      WebElement dropdown = driver.findElement(By.name("companyId"));
-      dropdown.findElement(By.xpath("//option[. = 'IBM']")).click();
-    }
-    driver.findElement(By.cssSelector("option:nth-child(14)")).click();
-    driver.findElement(By.id("addSubmit")).click();
-   
-    {
-      assert(driver.findElements(By.id("success")) != null);
-    }
-  }
+	private WebDriver driver;
+	JavascriptExecutor js;
+
+	@Before
+	public void setUp() {
+		WebDriverManager.chromedriver().version("77.0.3865.40").setup();
+		driver = new ChromeDriver();
+
+		js = (JavascriptExecutor) driver;
+	}
+
+	@After
+	public void tearDown() {
+		driver.quit();
+	}
+
+	@Test
+	public void addTest() {
+		driver.get("http://localhost:8080/computerDatabase/dashboard");
+		driver.manage().window().setSize(new Dimension(876, 691));
+		driver.findElement(By.id("addComputer")).click();
+		driver.findElement(By.name("name")).click();
+		driver.findElement(By.name("name")).sendKeys("test");
+		driver.findElement(By.id("introduced")).click();
+		driver.findElement(By.id("introduced")).sendKeys("2019-10-23");
+		driver.findElement(By.id("discontinued")).click();
+		driver.findElement(By.id("discontinued")).sendKeys("2019-10-25");
+//		driver.findElement(By.name("companyId")).click();
+//		{
+//			WebElement dropdown = driver.findElement(By.name("companyId"));
+//			dropdown.findElement(By.xpath("//option[. = '--']")).click();
+//		}
+//		driver.findElement(By.cssSelector("option:nth-child(14)")).click();
+		driver.findElement(By.id("addSubmit")).click();
+
+		{
+			assert (driver.findElements(By.id("success")) != null);
+			// assert(true);
+		}
+	}
 }

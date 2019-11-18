@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,7 +27,9 @@ public class DachboardController {
 	@GetMapping("/dashboard")
 	public ModelAndView dashboard(@RequestParam(value = "param", required = false) String param,
 			@RequestParam(value = "value", required = false) String value) {
+
 		ModelAndView mv = new ModelAndView();
+		System.out.println("dachboard");
 
 		try {
 			page.update(param, value);
@@ -39,7 +42,7 @@ public class DachboardController {
 		return mv;
 	}
 
-	@DeleteMapping("/delete")
+	@PostMapping("/delete")
 	public ModelAndView deleteListId(@RequestParam(value = "selection", required = false) String selection) {
 		String[] ids = selection.split(",");
 		List<String> errors = new ArrayList<String>();
@@ -64,5 +67,12 @@ public class DachboardController {
 		} catch (NumberFormatException e) {
 			errors.add("errror the list contain : " + id + ". He connot be an id because it's not an integer");
 		}
+	}
+
+	@GetMapping("/")
+	public ModelAndView error() {
+
+		ModelAndView mv = new ModelAndView("404");
+		return mv;
 	}
 }

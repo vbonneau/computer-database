@@ -26,7 +26,7 @@ public class CompanyService {
 		return dao.findPage(limit, offcet);
 	}
 
-	public int count() {
+	public long count() {
 		return dao.countCompany();
 	}
 

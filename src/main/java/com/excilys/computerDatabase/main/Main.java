@@ -1,4 +1,5 @@
 package com.excilys.computerDatabase.main;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -25,7 +26,7 @@ public class Main {
 	private static Scanner sc = new Scanner(System.in);
 	private static int limit = 10;
 	private static int offset = 0;
-	private static int nbPage;
+	private static long nbPage;
 	private static int actualPage = 1;
 	private static String command;
 	@Autowired
@@ -35,12 +36,11 @@ public class Main {
 	@Autowired
 	private DateMapper dateMapper;
 
-	
 	public static void main(String[] args) throws ClassNotFoundException {
 		boolean testContinue = true;
 		System.out.println("main");
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfigurationCli.class);
-		
+
 		Main main = ctx.getBean(Main.class);
 
 		while (testContinue) {
@@ -94,9 +94,8 @@ public class Main {
 		}
 		sc.close();
 		System.out.println("good bye");
-		
-	}
 
+	}
 
 	private void deleteCompany() {
 		int id = 0;
@@ -111,24 +110,23 @@ public class Main {
 		companyService.deleteCompany(id);
 	}
 
-
 	private void listComputer() {
-		int nbComputer = computerService.count();
+		long nbComputer = computerService.count();
 		nbPage = (nbComputer + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			List<Computer> listComputer =  computerService.getPage(limit, offset);
-		displaylistComputer(listComputer);
+			List<Computer> listComputer = computerService.getPage(limit, offset);
+			displaylistComputer(listComputer);
 		} while (navigatePage());
 	}
 
 	private void listCompany() {
-		int nbCompany = companyService.count();
+		long nbCompany = companyService.count();
 		nbPage = (nbCompany + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			List<Company> listCompany =  companyService.getPage(limit, offset);
-		displaylistCompany(listCompany);
+			List<Company> listCompany = companyService.getPage(limit, offset);
+			displaylistCompany(listCompany);
 		} while (navigatePage());
 
 	}
@@ -144,14 +142,14 @@ public class Main {
 			command = sc.nextLine();
 			System.out.println(command);
 			switch (command) {
-				case "+" :
-					newPage = actualPage + 1;
-					break;
-				case "-":
-					newPage = actualPage - 1;
-					break;
-				default :
-					System.out.println("commande invalid");
+			case "+":
+				newPage = actualPage + 1;
+				break;
+			case "-":
+				newPage = actualPage - 1;
+				break;
+			default:
+				System.out.println("commande invalid");
 			}
 		}
 
@@ -199,7 +197,6 @@ public class Main {
 
 		return id;
 	}
-
 
 	private void creatComputer() {
 		Computer computer = askInfoComputer();
@@ -255,7 +252,8 @@ public class Main {
 
 	private LocalDate askDate(String sentence) {
 		LocalDate date = null;
-		System.out.println("veuillez entrer la date à laquelle l'ordinateur à été " + sentence + " ( format jour/mois/année )");
+		System.out.println(
+				"veuillez entrer la date à laquelle l'ordinateur à été " + sentence + " ( format jour/mois/année )");
 		String dateString = sc.nextLine();
 		try {
 			date = dateMapper.StringToDate(dateString);
@@ -288,7 +286,8 @@ public class Main {
 		companyName = sc.nextLine();
 		company = companyService.getCompany(companyName);
 		if (company.getId() == 0) {
-			System.out.println("la compagni n'a pas été trouvé dans la base de donnée aucune compagnie n'a été assosié à l'ordinateur");
+			System.out.println(
+					"la compagni n'a pas été trouvé dans la base de donnée aucune compagnie n'a été assosié à l'ordinateur");
 		}
 		return company;
 	}

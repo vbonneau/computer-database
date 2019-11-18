@@ -28,12 +28,10 @@ public class DateMapper {
 		}
 	}
 
-	public String dateToString(LocalDate introduced) {
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		if (introduced == null) {
+	public String dateToString(LocalDate date) {
+		if (date == null) {
 			return "";
 		}
-		String dateString = introduced.format(format);
-		return dateString;
+		return date.toString();
 	}
 }

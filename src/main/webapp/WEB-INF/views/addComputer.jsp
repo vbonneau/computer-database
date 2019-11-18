@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>  
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,8 +22,8 @@
     <section id="main">
         <div class="container">
         
-        	<div id="alertMessage" class="alert alert-danger" <c:if test="${ errors == null }"> style="display: none" </c:if>>
-				<c:forEach var="error" items="${ errors }">
+        	<div id="alertMessage" class="alert alert-danger" <c:if test="${ listErrors == null }"> style="display: none" </c:if>>
+				<c:forEach var="error" items="${ listErrors }">
 					${ error }
 					<br>
 				</c:forEach>
@@ -51,9 +51,9 @@
                                  min="1970-01-01" max="2038-01-19"/>
                             </div>
                             <div class="form-group">
-                                <form:label path="company.id" for="companyId">Company</form:label>
+                                <form:label path="companyId" for="companyId">Company</form:label>
                                 
-                                <form:select path="company.id" class="form-control" name="companyId" >
+                                <form:select path="companyId" class="form-control" name="companyId" >
                                     <form:option value="0">--</form:option>
                                     <form:options items="${ companys }"/>
                                 </form:select>
