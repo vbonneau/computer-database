@@ -73,6 +73,6 @@
 
 <script src="<c:url value = "/resources/js/jquery.min.js"/>"></script> 
 <script src="<c:url value = "/resources/js/bootstrap.min.js"/>"></script>
-<script src="/resources/js/addComputer.js"></script>
+<script src="<c:url value = /resources/js/addComputer.js/>"></script>
 
 </html>

@@ -27,7 +27,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.excilys.computerDatabase.configuration.SpringMvcConfiguration;
+
 
 @Configuration
 @ComponentScan(basePackages = { "com.excilys.computerDatabase.dao",
@@ -59,7 +59,7 @@ public class SpringConfiguration implements WebApplicationInitializer {
 		// Init application context
 		System.out.println("start");
 		AnnotationConfigWebApplicationContext webCtx = new AnnotationConfigWebApplicationContext();
-		webCtx.register(SpringConfiguration.class, SpringMvcConfiguration.class);
+		webCtx.register(SpringConfiguration.class, SpringMvcConfiguration.class,SpringSecurityConfiguration.class);
 		webCtx.setServletContext(ctx);
 		// Init dispatcher servlet
 		ServletRegistration.Dynamic servlet = ctx.addServlet("springapp", new DispatcherServlet(webCtx));

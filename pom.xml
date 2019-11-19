@@ -22,7 +22,7 @@
 		<querydsl.version>4.0.6</querydsl.version>
 		<logback.version>1.0.13</logback.version>
 		<hibernate.version>5.4.7.Final</hibernate.version>
-		<spring.version>5.2.0.RELEASE</spring.version>
+		<spring.version>5.2.1.RELEASE</spring.version>
 		<github.version>3.0.0</github.version>
 		<servlet.version>4.0.1</servlet.version>
 		<h2database.version>1.4.200</h2database.version>
@@ -33,28 +33,15 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${servlet.version}</version>
-			<scope>provided</scope>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.taglibs</groupId>
-			<artifactId>taglibs-standard-impl</artifactId>
-			<version>${apache.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.taglibs</groupId>
-			<artifactId>taglibs-standard-spec</artifactId>
-			<version>${apache.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>${selenium.version}</version>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 
 		<dependency>
@@ -124,6 +111,12 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 

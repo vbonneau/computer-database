@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,7 +22,7 @@ public class ComputerDao {
 	private EntityManager entityManager;
 
 	@Autowired
-	public ComputerDao(DataSource dataSource) {
+	public ComputerDao() {
 	}
 
 	public List<Computer> findPage(int limit, int offset) {
