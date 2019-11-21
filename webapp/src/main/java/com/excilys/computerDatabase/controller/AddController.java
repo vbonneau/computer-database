@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.excilys.computerDatabase.dto.CompanyDto;
 import com.excilys.computerDatabase.dto.ComputerDto;
-import com.excilys.computerDatabase.entity.Company;
-import com.excilys.computerDatabase.entity.Computer;
 import com.excilys.computerDatabase.exception.BadEntriException;
 import com.excilys.computerDatabase.mapper.ComputerMapper;
 import com.excilys.computerDatabase.page.Page;
@@ -41,7 +40,7 @@ public class AddController {
 	public ModelAndView getAddComputer() throws ServletException, IOException {
 		ModelAndView mv = new ModelAndView();
 		mv.getModelMap().put("companys",
-				companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
+				companyService.getAll().stream().collect(Collectors.toMap(CompanyDto::getId, CompanyDto::getName)));
 		mv.setViewName("addComputer");
 		mv.getModelMap().put("computerDto", new ComputerDto());
 		return mv;
@@ -55,27 +54,27 @@ public class AddController {
 		ModelAndView mv;
 		ArrayList<String> errors = new ArrayList<String>();
 		ArrayList<String> success = new ArrayList<String>();
-		Computer computer;
-
+		
 		try {
-			computer = computerMapper.dtoToComputer(computerDto);
+			if(!computerService.updateComputer(computerDto)) {
+				errors.add("add fail");
+			}
 		} catch (BadEntriException e) {
 			errors.add(e.getMessage());
-			computer = new Computer();
+			errors.add("add fail");
 		}
-
-		if (errors.isEmpty() && computerService.addCompeuter(computer)) {
-			success.add("the computer " + computer.getName() + " has been well add");
+		
+		if (errors.isEmpty()) {
+			success.add("the computer " + computerDto.getName() + " has been well add");
 			mv = dachboard.dashboard(null, null);
 			mv.getModelMap().put("listSuccess", success);
 			errors = null;
 			page.updateNbComputer();
 		} else {
-			errors.add("add fail");
 			mv = new ModelAndView("addComputer");
 			mv.getModelMap().put("computerDto", computerDto);
 			mv.getModelMap().put("companys",
-					companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
+					companyService.getAll().stream().collect(Collectors.toMap(CompanyDto::getId, CompanyDto::getName)));
 			mv.getModelMap().put("listErrors", errors);
 		}
 

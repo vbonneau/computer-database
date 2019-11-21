@@ -3,15 +3,12 @@ package com.excilys.computerDatabase.page;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerDatabase.dto.ComputerDto;
-import com.excilys.computerDatabase.entity.Computer;
 import com.excilys.computerDatabase.exception.BadEntriException;
-import com.excilys.computerDatabase.mapper.ComputerMapper;
 import com.excilys.computerDatabase.service.ComputerService;
 
 @Component
@@ -26,8 +23,6 @@ public class Page {
 	private ComputerService computerService;
 	private long nbPage;
 	private int offset;
-	@Autowired
-	private ComputerMapper computerMapper;
 
 	@Autowired
 	public Page(ComputerService computerService) {
@@ -91,11 +86,6 @@ public class Page {
 	}
 
 	public List<ComputerDto> getComputersDto() {
-		List<Computer> computers = computerService.getPage(limit, offset, search, order, asc);
-		return computers.stream().map(computer -> computerMapper.computerToDto(computer)).collect(Collectors.toList());
-	}
-
-	public List<Computer> getComputers() {
 		return computerService.getPage(limit, offset, search, order, asc);
 	}
 
@@ -149,7 +139,7 @@ public class Page {
 
 	public Map<String, Object> getInfo() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("computers", getComputers());
+		map.put("computers", getComputersDto());
 		map.put("nbPage", getNbPage());
 		map.put("page", getActualPage());
 		map.put("nbComputer", getNbComputer());

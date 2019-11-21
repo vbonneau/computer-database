@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import com.excilys.computerDatabase.dto.CompanyDto;
 import com.excilys.computerDatabase.entity.Company;
 
 @Component
@@ -25,5 +26,13 @@ public class CompanyMapper implements RowMapper<Company> {
 			company = new Company();
 		}
 		return company;
+	}
+	
+	public CompanyDto companyToDto(Company company) {
+		return new CompanyDto.CompanyDtoBuilder().withId(company.getId()).withName(company.getName()).build();
+	}
+	
+	public Company dtoToCompany(CompanyDto companyDto){
+		return new Company.CompanyBuilder().withId(companyDto.getId()).withName(companyDto.getName()).build();
 	}
 }

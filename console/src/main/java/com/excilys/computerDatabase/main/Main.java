@@ -9,8 +9,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 import com.excilys.computerDatabase.configurationCli.SpringConfigurationCli;
-import com.excilys.computerDatabase.entity.Company;
-import com.excilys.computerDatabase.entity.Computer;
+import com.excilys.computerDatabase.dto.CompanyDto;
+import com.excilys.computerDatabase.dto.ComputerDto;
 import com.excilys.computerDatabase.exception.BadEntriException;
 import com.excilys.computerDatabase.mapper.DateMapper;
 import com.excilys.computerDatabase.service.CompanyService;
@@ -112,7 +112,7 @@ public class Main {
 		nbPage = (nbComputer + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			List<Computer> listComputer = computerService.getPage(limit, offset);
+			List<ComputerDto> listComputer = computerService.getPage(limit, offset);
 			displaylistComputer(listComputer);
 		} while (navigatePage());
 	}
@@ -122,7 +122,7 @@ public class Main {
 		nbPage = (nbCompany + limit - 1) / limit;
 		do {
 			offset = (actualPage - 1) * limit;
-			List<Company> listCompany = companyService.getPage(limit, offset);
+			List<CompanyDto> listCompany = companyService.getPage(limit, offset);
 			displaylistCompany(listCompany);
 		} while (navigatePage());
 
@@ -164,21 +164,21 @@ public class Main {
 		return true;
 	}
 
-	private void displaylistCompany(List<Company> listCompany) {
-		for (Company company : listCompany) {
+	private void displaylistCompany(List<CompanyDto> listCompany) {
+		for (CompanyDto company : listCompany) {
 			System.out.println(company.toString());
 		}
 	}
 
-	private void displaylistComputer(List<Computer> listComputer) {
-		for (Computer computer : listComputer) {
+	private void displaylistComputer(List<ComputerDto> listComputer) {
+		for (ComputerDto computer : listComputer) {
 			System.out.println(computer.toString());
 		}
 	}
 
 	private int displayOneComputer() {
 		int id = 0;
-		Computer computer;
+		ComputerDto computer;
 		System.out.println("veuillez entrer l'id de l'ordinateur");
 		if (sc.hasNextInt()) {
 			id = sc.nextInt();
@@ -196,9 +196,13 @@ public class Main {
 	}
 
 	private void creatComputer() {
-		Computer computer = askInfoComputer();
+		ComputerDto computer = askInfoComputer();
 		System.out.println(computer.toString());
-		computerService.addCompeuter(computer);
+		try {
+			computerService.addCompeuter(computer);
+		} catch (BadEntriException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	private void updateComputer() {
@@ -206,10 +210,14 @@ public class Main {
 		if (id == 0) {
 			return;
 		}
-		Computer computer = askInfoComputer();
+		ComputerDto computer = askInfoComputer();
 		computer.setId(id);
 		System.out.println(computer.toString());
-		computerService.updateComputer(computer);
+		try {
+			computerService.updateComputer(computer);
+		} catch (BadEntriException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	private void deleteComputer() {
@@ -220,8 +228,8 @@ public class Main {
 		computerService.deleteComputer(id);
 	}
 
-	private Computer askInfoComputer() {
-		Computer computer = new Computer();
+	private ComputerDto askInfoComputer() {
+		ComputerDto computer = new ComputerDto();
 		LocalDate introduced;
 		LocalDate discontinued;
 		computer.setName(askComputerName());
@@ -230,8 +238,8 @@ public class Main {
 			introduced = askDate("introduit");
 			discontinued = askDate("retirer");
 		} while (!checkDate(introduced, discontinued));
-		computer.setIntroduced(introduced);
-		computer.setDiscontinued(discontinued);
+		computer.setIntroduced(introduced.toString());
+		computer.setDiscontinued(discontinued.toString());
 		computer.setCompany(askCompany());
 
 		return computer;
@@ -276,8 +284,8 @@ public class Main {
 		}
 	}
 
-	private Company askCompany() {
-		Company company = new Company();
+	private CompanyDto askCompany() {
+		CompanyDto company = new CompanyDto();
 		String companyName;
 		System.out.println("veuillez entrer le nom de la compagni qui fabriqué l'ordinateur");
 		companyName = sc.nextLine();

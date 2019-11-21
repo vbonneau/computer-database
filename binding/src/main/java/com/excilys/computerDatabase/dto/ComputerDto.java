@@ -6,7 +6,7 @@ public class ComputerDto {
 	private String name;
 	private String introduced;
 	private String discontinued;
-	private int companyId;
+	private CompanyDto company;
 
 	public int getId() {
 		return id;
@@ -20,8 +20,8 @@ public class ComputerDto {
 	public String getDiscontinued() {
 		return discontinued;
 	}
-	public int getCompanyId() {
-		return companyId;
+	public CompanyDto getCompany() {
+		return company;
 	}
 	public void setId(int id) {
 		this.id = id;
@@ -35,22 +35,22 @@ public class ComputerDto {
 	public void setDiscontinued(String discontinued) {
 		this.discontinued = discontinued;
 	}
-	public void setCompanyId(int companyId) {
-		this.companyId = companyId;
+	public void setCompany(CompanyDto company) {
+		this.company = company;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "ComputerDto [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued="
-				+ discontinued + ", companyId=" + companyId + "]";
+				+ discontinued + ", company=" + company + "]";
 	}
-	
+
 	public static class ComputerDtoBuilder {
-		private int id = 0;
-		private String name = "";
-		private String introduced = "";
-		private String discontinued = "";
-		private int companyId = 0;
+		private int id;
+		private String name;
+		private String introduced;
+		private String discontinued;
+		private CompanyDto company;
 
 		public ComputerDtoBuilder withId(int id) {
 			this.id = id;
@@ -72,8 +72,8 @@ public class ComputerDto {
 			return this;
 		}
 
-		public ComputerDtoBuilder withCompanyId(int companyId) {
-			this.companyId = companyId;
+		public ComputerDtoBuilder withCompanyId(CompanyDto company) {
+			this.company = company;
 			return this;
 		}
 		
@@ -84,7 +84,7 @@ public class ComputerDto {
 			computerDto.setName(name);
 			computerDto.setIntroduced(introduced);
 			computerDto.setDiscontinued(discontinued);
-			computerDto.setCompanyId(companyId);
+			computerDto.setCompany(company);
 
 			return computerDto;
 		}

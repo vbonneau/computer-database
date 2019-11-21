@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +17,14 @@ import com.excilys.computerDatabase.validator.Validator;
 @Component
 public class ComputerMapper implements RowMapper<Computer> {
 
-	@Autowired
 	DateMapper dateMapper;
-	@Autowired
 	Validator validator;
+	private CompanyMapper companyMapper;
 
-	public ComputerMapper() {
-
+	public ComputerMapper(DateMapper dateMapper,Validator validator,CompanyMapper companyMapper) {
+		this.dateMapper = dateMapper;
+		this.validator = validator;
+		this.companyMapper = companyMapper;
 	}
 
 	public Computer mapRow(ResultSet result, int rowNum) {
@@ -64,7 +64,7 @@ public class ComputerMapper implements RowMapper<Computer> {
 		ComputerDto dto = new ComputerDto.ComputerDtoBuilder().withId(computer.getId()).withName(computer.getName())
 				.withDiscontinued(dateMapper.dateToString(computer.getDiscontinued()))
 				.withIntroduced(dateMapper.dateToString(computer.getIntroduced()))
-				.withCompanyId(computer.getCompany()==null? 0:computer.getCompany().getId())
+				.withCompanyId(companyMapper.companyToDto(computer.getCompany()))
 				.build();
 		return dto;
 	}
@@ -79,7 +79,7 @@ public class ComputerMapper implements RowMapper<Computer> {
 				.withName(dto.getName())
 				.withIntroduced(introduced)
 				.withDiscontinued(discontinued)
-				.withCompany(dto.getCompanyId() == 0 ? null: new Company.CompanyBuilder().withId(dto.getCompanyId()).build())
+				.withCompany(companyMapper.dtoToCompany(dto.getCompany()))
 				.build();
 
 		validator.checkComputer(computer);

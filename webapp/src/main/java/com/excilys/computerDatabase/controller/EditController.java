@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.excilys.computerDatabase.dto.CompanyDto;
 import com.excilys.computerDatabase.dto.ComputerDto;
-import com.excilys.computerDatabase.entity.Company;
-import com.excilys.computerDatabase.entity.Computer;
 import com.excilys.computerDatabase.exception.BadEntriException;
-import com.excilys.computerDatabase.mapper.ComputerMapper;
 import com.excilys.computerDatabase.page.Page;
 import com.excilys.computerDatabase.service.CompanyService;
 import com.excilys.computerDatabase.service.ComputerService;
@@ -29,8 +27,6 @@ public class EditController {
 	@Autowired
 	CompanyService companyService;
 	@Autowired
-	ComputerMapper computerMapper;
-	@Autowired
 	Page page;
 	@Autowired
 	DachboardController dachboard;
@@ -40,8 +36,8 @@ public class EditController {
 		ModelAndView mv = new ModelAndView();
 
 		mv.getModelMap().put("companys",
-				companyService.getAll().stream().collect(Collectors.toMap(Company::getId, Company::getName)));
-		mv.getModelMap().put("computerDto", computerMapper.computerToDto(computerService.getOne(id)));
+				companyService.getAll().stream().collect(Collectors.toMap(CompanyDto::getId, CompanyDto::getName)));
+		mv.getModelMap().put("computerDto", computerService.getOne(id));
 
 		mv.setViewName("editComputer");
 		return mv;
@@ -53,29 +49,29 @@ public class EditController {
 		ModelAndView mv;
 		ArrayList<String> errors = new ArrayList<String>();
 		ArrayList<String> success = new ArrayList<String>();
-		Computer computer;
+
+		
 
 		try {
-			computer = computerMapper.dtoToComputer(computerDto);
+			if(!computerService.updateComputer(computerDto)) {
+				errors.add("add fail");
+			}
 		} catch (BadEntriException e) {
 			errors.add(e.getMessage());
-			computer = new Computer();
+			errors.add("add fail");
 		}
-		System.out.println(computer);
-
-		if (errors.isEmpty() && computerService.updateComputer(computer)) {
-			success.add("the computer " + computer.getName() + " has been well add");
+		
+		if (errors.isEmpty()) {
+			success.add("the computer " + computerDto.getName() + " has been well add");
 			mv = getEditComputer(computerDto.getId());
 			mv.getModelMap().put("listSuccess", success);
 			errors = null;
-			page.updateNbComputer();
 		} else {
-			errors.add("add fail");
 			mv = new ModelAndView("editComputer");
 			mv.getModel().put("computer", computerDto);
 			mv.getModelMap().put("companys",
-					companyService.getAll().stream().collect(Collectors.toMap(Company::getId,
-					Company::getName)));
+					companyService.getAll().stream().collect(Collectors.toMap(CompanyDto::getId,
+					CompanyDto::getName)));
 			mv.getModelMap().put("listErrors", errors);
 		}
 
